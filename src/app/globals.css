@@ -411,6 +411,12 @@ button {
   gap: 16px;
 }
 
+.json-tool-lower-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
 .tool-block {
   display: flex;
   flex-direction: column;
@@ -456,6 +462,187 @@ button {
   background: rgba(255, 255, 255, 0.12);
 }
 
+.json-helper-panel,
+.json-tree-panel,
+.json-path-panel {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 14px;
+}
+
+.json-helper-panel p {
+  margin: 0;
+  color: var(--text-soft);
+}
+
+.json-tree-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.json-tree-header h2,
+.json-path-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.json-tree-header p,
+.json-path-header p {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  font-size: 0.92rem;
+}
+
+.json-tree-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.json-tree-selected {
+  margin: 12px 0;
+  color: var(--text-soft);
+}
+
+.json-tree-selected code {
+  color: var(--text);
+}
+
+.json-tree-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.json-tree-item {
+  margin: 0;
+  padding: 0;
+}
+
+.json-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+}
+
+.json-tree-row.selected {
+  background: rgba(225, 29, 72, 0.12);
+}
+
+.json-tree-main {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  padding: 6px 8px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-mono), "Cascadia Code", monospace;
+  font-size: 0.9rem;
+}
+
+.json-tree-main:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+}
+
+.json-tree-caret {
+  width: 14px;
+  color: var(--text-soft);
+  flex-shrink: 0;
+}
+
+.json-tree-key {
+  color: #93c5fd;
+}
+
+.json-tree-sep {
+  color: var(--text-soft);
+}
+
+.json-tree-type {
+  color: #f8fafc;
+}
+
+.json-tree-type.object {
+  color: #34d399;
+}
+
+.json-tree-type.array {
+  color: #fbbf24;
+}
+
+.json-tree-type.primitive {
+  color: #fda4af;
+}
+
+.json-tree-copy {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.json-tree-copy:hover {
+  border-color: var(--accent);
+}
+
+.json-path-controls {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.json-path-input {
+  flex: 1;
+  min-width: 220px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  color: var(--text);
+  padding: 10px 12px;
+  font-family: var(--font-mono), "Cascadia Code", monospace;
+}
+
+.json-path-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.json-path-result {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.json-path-result span {
+  color: var(--text-soft);
+}
+
+.json-path-result pre {
+  margin: 0;
+  min-height: 180px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 12px;
+  overflow: auto;
+  font-family: var(--font-mono), "Cascadia Code", monospace;
+  font-size: 0.9rem;
+}
+
 .sidebar-overlay {
   display: none;
 }
@@ -470,6 +657,10 @@ button {
   }
 
   .tool-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .json-tool-lower-grid {
     grid-template-columns: 1fr;
   }
 

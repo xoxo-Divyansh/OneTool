@@ -17,6 +17,10 @@ The format follows Keep a Changelog style and semantic-versioned checkpoints.
   - responsive two-panel input/output editor UI
   - Monaco Editor integration for syntax highlighting, line numbers, and indentation guides
   - inline error marker in editor with click-to-jump cursor behavior
+  - JSON Tree Viewer with expandable/collapsible node hierarchy
+  - node selection and per-node path copy actions
+  - JSON Path engine for extracting nested values (dot and bracket syntax)
+  - parser-to-tree flow that renders visualization only on valid JSON input
 
 ## [0.1.0-foundation] - 2026-02-28
 

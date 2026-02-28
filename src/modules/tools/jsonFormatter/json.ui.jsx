@@ -2,22 +2,34 @@
 
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
+import JsonTree from "@/modules/tools/jsonFormatter/tree/JsonTree";
 import {
   getOffsetFromLineColumn,
   minifyJson,
-  parseJson,
   prettifyJson,
+  parseJson as parseInputJson,
 } from "@/modules/tools/jsonFormatter/json.logic";
+import {
+  extractByJsonPath,
+  printJson,
+} from "@/modules/tools/jsonFormatter/tree/tree.utils";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
 });
 
 export default function JsonFormatterUI({ defaults }) {
+  const initialParsed = parseInputJson(defaults.input);
+
   const [input, setInput] = useState(defaults.input);
   const [output, setOutput] = useState(defaults.input);
   const [status, setStatus] = useState("Ready");
   const [errorInfo, setErrorInfo] = useState(null);
+  const [parsedData, setParsedData] = useState(initialParsed.ok ? initialParsed.data : null);
+  const [selectedPath, setSelectedPath] = useState("$");
+  const [pathQuery, setPathQuery] = useState("$");
+  const [pathResult, setPathResult] = useState("");
+  const [pathError, setPathError] = useState("");
   const [monacoApi, setMonacoApi] = useState(null);
   const [inputEditor, setInputEditor] = useState(null);
 
@@ -31,6 +43,11 @@ export default function JsonFormatterUI({ defaults }) {
     if (!model) return;
 
     monacoApi.editor.setModelMarkers(model, "json-formatter", []);
+  }
+
+  function clearPathState() {
+    setPathError("");
+    setPathResult("");
   }
 
   function applyErrorState(result) {
@@ -63,45 +80,45 @@ export default function JsonFormatterUI({ defaults }) {
     setMonacoApi(monaco);
   }
 
-  function onFormat() {
-    const result = parseJson(input);
+  function parseInputForTooling() {
+    const result = parseInputJson(input);
 
     if (!result.ok) {
       setStatus("Invalid JSON");
+      setParsedData(null);
       applyErrorState(result);
-      return;
+      return null;
     }
 
-    setOutput(prettifyJson(result.data));
-    setStatus("Formatted");
     clearErrorState();
+    setParsedData(result.data);
+    return result.data;
+  }
+
+  function onFormat() {
+    const data = parseInputForTooling();
+    if (!data) return;
+
+    setOutput(prettifyJson(data));
+    setStatus("Formatted");
+    clearPathState();
   }
 
   function onMinify() {
-    const result = parseJson(input);
+    const data = parseInputForTooling();
+    if (!data) return;
 
-    if (!result.ok) {
-      setStatus("Invalid JSON");
-      applyErrorState(result);
-      return;
-    }
-
-    setOutput(minifyJson(result.data));
+    setOutput(minifyJson(data));
     setStatus("Minified");
-    clearErrorState();
+    clearPathState();
   }
 
   function onValidate() {
-    const result = parseJson(input);
-
-    if (!result.ok) {
-      setStatus("Invalid JSON");
-      applyErrorState(result);
-      return;
-    }
+    const data = parseInputForTooling();
+    if (!data) return;
 
     setStatus("Valid JSON");
-    clearErrorState();
+    clearPathState();
   }
 
   async function onCopyOutput() {
@@ -119,6 +136,10 @@ export default function JsonFormatterUI({ defaults }) {
   function onClear() {
     setInput("");
     setOutput("");
+    setParsedData(null);
+    setSelectedPath("$");
+    setPathQuery("$");
+    clearPathState();
     setStatus("Cleared");
     clearErrorState();
   }
@@ -126,16 +147,23 @@ export default function JsonFormatterUI({ defaults }) {
   function onLoadSample() {
     setInput(defaults.input);
     setOutput(defaults.input);
+    setSelectedPath("$");
+    setPathQuery("$");
+    const sampleParsed = parseInputJson(defaults.input);
+    setParsedData(sampleParsed.ok ? sampleParsed.data : null);
+    clearPathState();
     setStatus("Sample loaded");
     clearErrorState();
   }
 
   function onInputChange(nextValue) {
     setInput(nextValue ?? "");
+    setParsedData(null);
+    clearPathState();
     if (errorInfo) {
       clearErrorState();
-      setStatus("Editing");
     }
+    setStatus("Editing");
   }
 
   function onJumpToError() {
@@ -160,6 +188,37 @@ export default function JsonFormatterUI({ defaults }) {
       endLineNumber: errorInfo.line,
       endColumn: errorInfo.column + 1,
     });
+  }
+
+  async function onCopyPath(path) {
+    try {
+      await navigator.clipboard.writeText(path);
+      setStatus(`Path copied: ${path}`);
+    } catch {
+      setStatus("Path copy failed");
+    }
+  }
+
+  function onRunPathQuery() {
+    const data = parseInputForTooling();
+    if (!data) return;
+
+    const result = extractByJsonPath(data, pathQuery);
+
+    if (!result.ok) {
+      setPathError(result.error);
+      setPathResult("");
+      setStatus("Path failed");
+      return;
+    }
+
+    setPathError("");
+    setPathResult(printJson(result.value));
+    setStatus("Path resolved");
+  }
+
+  function onUseSelectedPath() {
+    setPathQuery(selectedPath || "$");
   }
 
   return (
@@ -257,6 +316,50 @@ export default function JsonFormatterUI({ defaults }) {
           />
         </div>
       </div>
+
+      {parsedData ? (
+        <div className="json-tool-lower-grid">
+          <JsonTree
+            data={parsedData}
+            selectedPath={selectedPath}
+            onSelectPath={setSelectedPath}
+            onCopyPath={onCopyPath}
+          />
+
+          <section className="json-path-panel">
+            <header className="json-path-header">
+              <h2>JSON Path Engine</h2>
+              <p>Extract nested values quickly from the parsed tree.</p>
+            </header>
+
+            <div className="json-path-controls">
+              <input
+                className="json-path-input"
+                value={pathQuery}
+                onChange={(event) => setPathQuery(event.target.value)}
+                placeholder="$.user.skills[0]"
+              />
+              <button type="button" className="btn-cta-green" onClick={onRunPathQuery}>
+                Run Path
+              </button>
+              <button type="button" className="cmd-btn" onClick={onUseSelectedPath}>
+                Use Selected Path
+              </button>
+            </div>
+
+            {pathError ? <p className="tool-error">{pathError}</p> : null}
+
+            <div className="json-path-result">
+              <span>Result</span>
+              <pre>{pathResult || "Run a path query to view extracted JSON."}</pre>
+            </div>
+          </section>
+        </div>
+      ) : (
+        <section className="json-helper-panel">
+          <p>Valid JSON is required to render tree viewer and path engine.</p>
+        </section>
+      )}
     </section>
   );
 }
