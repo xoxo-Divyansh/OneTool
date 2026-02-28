@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 
 The format follows Keep a Changelog style and semantic-versioned checkpoints.
 
+## [Unreleased]
+
+### Added
+- Complete JSON Formatter v1:
+  - JSON validation
+  - pretty format (2-space indentation)
+  - minify output
+  - parse error feedback with line/column when available
+  - output copy action
+  - clear + sample load actions
+  - responsive two-panel input/output editor UI
+
 ## [0.1.0-foundation] - 2026-02-28
 
 ### Added
