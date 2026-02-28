@@ -21,6 +21,9 @@ The format follows Keep a Changelog style and semantic-versioned checkpoints.
   - node selection and per-node path copy actions
   - JSON Path engine for extracting nested values (dot and bracket syntax)
   - parser-to-tree flow that renders visualization only on valid JSON input
+  - API Tester v1 with method/url/headers/body request builder
+  - response inspector with status, duration, payload size, headers/body tabs
+  - normalized request engine with URL validation, JSON body validation, and response auto-parse
 
 ## [0.1.0-foundation] - 2026-02-28
 

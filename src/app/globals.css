@@ -643,6 +643,139 @@ button {
   font-size: 0.9rem;
 }
 
+.api-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.api-panel {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.api-panel h2,
+.api-panel h3 {
+  margin: 0;
+}
+
+.api-request-line {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px;
+}
+
+.api-select,
+.api-url-input,
+.api-header-row input {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+.api-select:focus,
+.api-url-input:focus,
+.api-header-row input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.api-subpanel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.api-subpanel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.api-headers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.api-header-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+}
+
+.api-remove-header {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.api-remove-header:hover {
+  border-color: var(--accent);
+}
+
+.api-metrics {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.api-badge {
+  border-radius: 999px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+}
+
+.api-badge.success {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.35);
+  color: #bbf7d0;
+}
+
+.api-badge.error {
+  background: rgba(225, 29, 72, 0.2);
+  border-color: rgba(225, 29, 72, 0.35);
+  color: #fecdd3;
+}
+
+.api-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.api-tabs button {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.api-tabs button.active {
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.api-response-view {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
 .sidebar-overlay {
   display: none;
 }
@@ -661,6 +794,10 @@ button {
   }
 
   .json-tool-lower-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .api-grid {
     grid-template-columns: 1fr;
   }
 
@@ -723,6 +860,14 @@ button {
   .tool-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .api-request-line {
+    grid-template-columns: 1fr;
+  }
+
+  .api-header-row {
+    grid-template-columns: 1fr;
   }
 }
 
