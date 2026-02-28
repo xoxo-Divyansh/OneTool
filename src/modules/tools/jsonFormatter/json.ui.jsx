@@ -1,22 +1,66 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import {
+  getOffsetFromLineColumn,
   minifyJson,
   parseJson,
   prettifyJson,
 } from "@/modules/tools/jsonFormatter/json.logic";
+
+const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
+  ssr: false,
+});
 
 export default function JsonFormatterUI({ defaults }) {
   const [input, setInput] = useState(defaults.input);
   const [output, setOutput] = useState(defaults.input);
   const [status, setStatus] = useState("Ready");
   const [errorInfo, setErrorInfo] = useState(null);
+  const [monacoApi, setMonacoApi] = useState(null);
+  const [inputEditor, setInputEditor] = useState(null);
 
   const isOutputEmpty = useMemo(() => output.trim().length === 0, [output]);
 
-  function clearError() {
+  function clearErrorState() {
     setErrorInfo(null);
+    if (!monacoApi || !inputEditor) return;
+
+    const model = inputEditor.getModel();
+    if (!model) return;
+
+    monacoApi.editor.setModelMarkers(model, "json-formatter", []);
+  }
+
+  function applyErrorState(result) {
+    setErrorInfo(result);
+
+    if (!monacoApi || !inputEditor) return;
+
+    const model = inputEditor.getModel();
+    if (!model) return;
+
+    if (!result?.line || !result?.column) {
+      monacoApi.editor.setModelMarkers(model, "json-formatter", []);
+      return;
+    }
+
+    monacoApi.editor.setModelMarkers(model, "json-formatter", [
+      {
+        startLineNumber: result.line,
+        startColumn: result.column,
+        endLineNumber: result.line,
+        endColumn: result.column + 1,
+        message: result.error,
+        severity: monacoApi.MarkerSeverity.Error,
+      },
+    ]);
+  }
+
+  function handleInputMount(editor, monaco) {
+    setInputEditor(editor);
+    setMonacoApi(monaco);
   }
 
   function onFormat() {
@@ -24,13 +68,13 @@ export default function JsonFormatterUI({ defaults }) {
 
     if (!result.ok) {
       setStatus("Invalid JSON");
-      setErrorInfo(result);
+      applyErrorState(result);
       return;
     }
 
     setOutput(prettifyJson(result.data));
     setStatus("Formatted");
-    clearError();
+    clearErrorState();
   }
 
   function onMinify() {
@@ -38,13 +82,13 @@ export default function JsonFormatterUI({ defaults }) {
 
     if (!result.ok) {
       setStatus("Invalid JSON");
-      setErrorInfo(result);
+      applyErrorState(result);
       return;
     }
 
     setOutput(minifyJson(result.data));
     setStatus("Minified");
-    clearError();
+    clearErrorState();
   }
 
   function onValidate() {
@@ -52,12 +96,12 @@ export default function JsonFormatterUI({ defaults }) {
 
     if (!result.ok) {
       setStatus("Invalid JSON");
-      setErrorInfo(result);
+      applyErrorState(result);
       return;
     }
 
     setStatus("Valid JSON");
-    clearError();
+    clearErrorState();
   }
 
   async function onCopyOutput() {
@@ -66,7 +110,7 @@ export default function JsonFormatterUI({ defaults }) {
     try {
       await navigator.clipboard.writeText(output);
       setStatus("Output copied");
-      clearError();
+      clearErrorState();
     } catch {
       setStatus("Copy failed");
     }
@@ -76,14 +120,46 @@ export default function JsonFormatterUI({ defaults }) {
     setInput("");
     setOutput("");
     setStatus("Cleared");
-    clearError();
+    clearErrorState();
   }
 
   function onLoadSample() {
     setInput(defaults.input);
     setOutput(defaults.input);
     setStatus("Sample loaded");
-    clearError();
+    clearErrorState();
+  }
+
+  function onInputChange(nextValue) {
+    setInput(nextValue ?? "");
+    if (errorInfo) {
+      clearErrorState();
+      setStatus("Editing");
+    }
+  }
+
+  function onJumpToError() {
+    if (!inputEditor || !errorInfo?.line || !errorInfo?.column) return;
+
+    const offset = getOffsetFromLineColumn(input, errorInfo.line, errorInfo.column);
+    if (offset === null) return;
+
+    inputEditor.focus();
+    inputEditor.setPosition({
+      lineNumber: errorInfo.line,
+      column: errorInfo.column,
+    });
+    inputEditor.revealPositionInCenter({
+      lineNumber: errorInfo.line,
+      column: errorInfo.column,
+    });
+
+    inputEditor.setSelection({
+      startLineNumber: errorInfo.line,
+      startColumn: errorInfo.column,
+      endLineNumber: errorInfo.line,
+      endColumn: errorInfo.column + 1,
+    });
   }
 
   return (
@@ -123,30 +199,63 @@ export default function JsonFormatterUI({ defaults }) {
           {errorInfo.line && errorInfo.column
             ? ` (line ${errorInfo.line}, col ${errorInfo.column})`
             : ""}
+          {errorInfo.line && errorInfo.column ? (
+            <button type="button" className="tool-error-jump" onClick={onJumpToError}>
+              Jump to error
+            </button>
+          ) : null}
         </p>
       ) : null}
 
       <div className="tool-grid">
-        <label className="tool-block">
+        <div className="tool-block">
           <span>Input JSON</span>
-          <textarea
-            className="tool-textarea"
+          <MonacoEditor
+            height="420px"
+            defaultLanguage="json"
             value={input}
-            onChange={(event) => setInput(event.target.value)}
-            placeholder='{"example":"value"}'
-            spellCheck={false}
+            onChange={onInputChange}
+            onMount={handleInputMount}
+            theme="vs-dark"
+            options={{
+              minimap: { enabled: false },
+              fontSize: 14,
+              lineNumbers: "on",
+              glyphMargin: true,
+              automaticLayout: true,
+              scrollBeyondLastLine: false,
+              tabSize: 2,
+              insertSpaces: true,
+              wordWrap: "on",
+              guides: {
+                indentation: true,
+              },
+            }}
           />
-        </label>
+        </div>
 
-        <label className="tool-block">
+        <div className="tool-block">
           <span>Output</span>
-          <textarea
-            className="tool-textarea tool-textarea-readonly"
+          <MonacoEditor
+            height="420px"
+            defaultLanguage="json"
             value={output}
-            readOnly
-            spellCheck={false}
+            theme="vs-dark"
+            options={{
+              readOnly: true,
+              minimap: { enabled: false },
+              fontSize: 14,
+              lineNumbers: "on",
+              automaticLayout: true,
+              scrollBeyondLastLine: false,
+              tabSize: 2,
+              wordWrap: "on",
+              guides: {
+                indentation: true,
+              },
+            }}
           />
-        </label>
+        </div>
       </div>
     </section>
   );

@@ -41,3 +41,30 @@ export function prettifyJson(data) {
 export function minifyJson(data) {
   return JSON.stringify(data);
 }
+
+export function getOffsetFromLineColumn(text, line, column) {
+  if (!Number.isInteger(line) || !Number.isInteger(column)) {
+    return null;
+  }
+
+  if (line < 1 || column < 1) {
+    return null;
+  }
+
+  const lines = text.split("\n");
+
+  if (line > lines.length) {
+    return null;
+  }
+
+  let offset = 0;
+
+  for (let index = 0; index < line - 1; index += 1) {
+    offset += lines[index].length + 1;
+  }
+
+  const currentLine = lines[line - 1];
+  const safeColumn = Math.min(column - 1, currentLine.length);
+
+  return offset + safeColumn;
+}

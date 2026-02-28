@@ -15,6 +15,8 @@ The format follows Keep a Changelog style and semantic-versioned checkpoints.
   - output copy action
   - clear + sample load actions
   - responsive two-panel input/output editor UI
+  - Monaco Editor integration for syntax highlighting, line numbers, and indentation guides
+  - inline error marker in editor with click-to-jump cursor behavior
 
 ## [0.1.0-foundation] - 2026-02-28
 
