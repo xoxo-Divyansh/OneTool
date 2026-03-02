@@ -1,9 +1,8 @@
-import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
+import { signToken } from "@/lib/auth/jwt";
 import { connectDB } from "@/lib/db/connect";
 import User from "@/lib/db/models/user.model";
-import { signToken } from "@/lib/auth/jwt";
-import { setAuthCookies } from "@/lib/auth/cookies";
+import bcrypt from "bcryptjs";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
   await connectDB();
@@ -11,10 +10,7 @@ export async function POST(req) {
   const { name, email, password } = await req.json();
 
   if (!name || !email || !password) {
-    return NextResponse.json(
-      { message: "Missing fields" },
-      { status: 400 }
-    );
+    return NextResponse.json({ message: "Missing fields" }, { status: 400 });
   }
 
   const existing = await User.findOne({ email });
@@ -22,7 +18,7 @@ export async function POST(req) {
   if (existing) {
     return NextResponse.json(
       { message: "Email already registered" },
-      { status: 409 }
+      { status: 409 },
     );
   }
 
@@ -37,9 +33,7 @@ export async function POST(req) {
   const accessToken = signToken({ id: user._id });
   const refreshToken = signToken({ id: user._id }, "7d");
 
-  setAuthCookies(accessToken, refreshToken);
-
-  return NextResponse.json({
+  const res = NextResponse.json({
     success: true,
     user: {
       id: user._id,
@@ -47,4 +41,20 @@ export async function POST(req) {
       email: user.email,
     },
   });
+
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 15,
+  };
+
+  res.cookies.set("accessToken", accessToken, cookieOptions);
+  res.cookies.set("refreshToken", refreshToken, {
+    ...cookieOptions,
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
+  return res;
 }

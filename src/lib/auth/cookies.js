@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 
-export function setAuthCookies(accessToken, refreshToken) {
-  const cookieStore = cookies();
+export async function setAuthCookies(accessToken, refreshToken) {
+  const cookieStore = await cookies();
 
   cookieStore.set("accessToken", accessToken, {
     httpOnly: true,
@@ -20,8 +20,8 @@ export function setAuthCookies(accessToken, refreshToken) {
   });
 }
 
-export function clearAuthCookies() {
-  const cookieStore = cookies();
+export async function clearAuthCookies() {
+  const cookieStore = await cookies();
   cookieStore.delete("accessToken");
   cookieStore.delete("refreshToken");
 }
