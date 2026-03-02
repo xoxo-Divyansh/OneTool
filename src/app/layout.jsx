@@ -1,6 +1,5 @@
 // SERVER
 import { DM_Sans, JetBrains_Mono, Space_Grotesk } from "next/font/google";
-import PropTypes from "prop-types";
 import "./globals.css";
 import Providers from "./providers";
 
@@ -30,7 +29,3 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-
-RootLayout.propTypes = {
-  children: PropTypes.node.isRequired,
-};

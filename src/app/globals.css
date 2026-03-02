@@ -10,7 +10,7 @@
   --border: #333944;
   --text: #e7e9ee;
   --text-soft: #a2a9b5;
-  --accent: #e11d48;
+  --accent: #22c55e;
   --accent-hover: #aa586c;
   --success: #22c55e;
   --success-hover: #16a34a;
@@ -774,6 +774,72 @@ button {
   border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
+}
+
+.api-quota-note {
+  margin: 0;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.12);
+  color: #bbf7d0;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.api-history-panel {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.api-history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.api-history-head h3 {
+  margin: 0;
+}
+
+.api-history-empty {
+  margin: 0;
+  color: var(--text-soft);
+}
+
+.api-history-table-wrap {
+  overflow-x: auto;
+}
+
+.api-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.api-history-table th,
+.api-history-table td {
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 8px;
+  font-size: 0.9rem;
+}
+
+.api-history-table th {
+  color: var(--text-soft);
+  font-weight: 500;
+}
+
+.api-history-url {
+  font-family: var(--font-mono), "Cascadia Code", monospace;
+  max-width: 360px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sidebar-overlay {

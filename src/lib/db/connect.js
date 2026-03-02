@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  throw new Error("❌ MONGODB_URI not defined in environment variables");
+  throw new Error("MONGODB_URI not defined in environment variables");
 }
 
 let cached = globalThis.mongoose;
@@ -22,6 +22,5 @@ export async function connectDB() {
   }
 
   cached.conn = await cached.promise;
-  console.log("✅ MongoDB Connected");
   return cached.conn;
 }
