@@ -9,6 +9,8 @@ export const apiTesterDefaults = {
 };
 
 export const HTTP_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"];
+const API_TESTER_RUN_ENDPOINT = "/api/tools/api-tester/run";
+const API_TESTER_HISTORY_ENDPOINT = "/api/tools/api-tester/history";
 
 export function createHeaderRow() {
   return {
@@ -101,7 +103,30 @@ function parseResponseBody(text, contentType = "") {
   return { isJson: false, bodyJson: null, bodyText: text };
 }
 
-export async function sendRequest({ method, url, headers, body }) {
+async function parseJsonResponse(response) {
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+function extractErrorMessage(response, payload, fallback) {
+  if (payload?.message) return payload.message;
+  if (payload?.error) return payload.error;
+
+  if (response.status === 401) {
+    return "You must be logged in to use API Tester.";
+  }
+
+  if (response.status === 429) {
+    return "Quota exceeded. Please wait for reset or upgrade your plan.";
+  }
+
+  return fallback;
+}
+
+export async function runApiRequest({ method, url, headers, body }) {
   const urlValidation = validateUrl(url);
   if (!urlValidation.ok) {
     return { ok: false, error: urlValidation.error };
@@ -112,39 +137,101 @@ export async function sendRequest({ method, url, headers, body }) {
     return { ok: false, error: requestBody.error };
   }
 
-  const start = performance.now();
-
   try {
-    const response = await fetch(url, {
-      method,
-      headers,
-      body: requestBody.body,
+    const response = await fetch(API_TESTER_RUN_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       credentials: "include",
+      body: JSON.stringify({
+        method,
+        url,
+        headers,
+        body: requestBody.body ?? "",
+      }),
     });
 
-    const durationMs = Math.round(performance.now() - start);
-    const headersObj = Object.fromEntries(response.headers.entries());
-    const contentType = headersObj["content-type"] || "";
-    const text = await response.text();
-    const parsedBody = parseResponseBody(text, contentType);
+    const payload = await parseJsonResponse(response);
+    if (!response.ok) {
+      return {
+        ok: false,
+        error: extractErrorMessage(response, payload, "Request failed"),
+        status: response.status,
+      };
+    }
 
     return {
       ok: true,
-      response: {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-        durationMs,
-        headers: headersObj,
-        contentType,
-        sizeBytes: new TextEncoder().encode(text).length,
-        ...parsedBody,
-      },
+      response: payload?.response,
+      historyEntry: payload?.historyEntry ?? null,
+      quota: payload?.quota ?? null,
     };
   } catch (error) {
     return {
       ok: false,
       error: error instanceof Error ? error.message : "Network request failed",
+    };
+  }
+}
+
+function normalizeHistoryEntry(entry) {
+  if (!entry) return null;
+
+  const bodyText =
+    typeof entry?.response?.bodyText === "string"
+      ? entry.response.bodyText
+      : typeof entry?.response?.bodyJson !== "undefined"
+        ? JSON.stringify(entry.response.bodyJson, null, 2)
+        : typeof entry?.response?.error === "string"
+          ? entry.response.error
+          : "";
+  const contentType = entry?.response?.contentType ?? "";
+  const parsedBody = parseResponseBody(bodyText, contentType);
+
+  return {
+    id: entry.id,
+    title: entry.title,
+    request: entry.request,
+    response: {
+      ...entry.response,
+      ...parsedBody,
+      bodyText,
+    },
+    meta: entry.meta,
+    createdAt: entry.createdAt,
+  };
+}
+
+export async function fetchApiHistory({ page = 1, pageSize = 10 } = {}) {
+  try {
+    const response = await fetch(
+      `${API_TESTER_HISTORY_ENDPOINT}?page=${encodeURIComponent(page)}&pageSize=${encodeURIComponent(pageSize)}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const payload = await parseJsonResponse(response);
+    if (!response.ok) {
+      return {
+        ok: false,
+        error: extractErrorMessage(response, payload, "Failed to load history"),
+        status: response.status,
+      };
+    }
+
+    return {
+      ok: true,
+      items: (payload?.items || []).map(normalizeHistoryEntry).filter(Boolean),
+      page: payload?.page ?? page,
+      pageSize: payload?.pageSize ?? pageSize,
+      total: payload?.total ?? 0,
+      hasMore: Boolean(payload?.hasMore),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Failed to load history",
     };
   }
 }

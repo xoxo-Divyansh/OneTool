@@ -1,13 +1,15 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   buildHeadersObject,
   createHeaderRow,
+  fetchApiHistory,
   HTTP_METHODS,
-  sendRequest,
+  runApiRequest,
 } from "@/modules/tools/apiTester/apiTester.logic";
+import ApiTesterHistory from "@/modules/tools/apiTester/history/ApiTesterHistory";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -29,6 +31,10 @@ export default function ApiTesterUI({ defaults }) {
   const [requestError, setRequestError] = useState("");
   const [responseData, setResponseData] = useState(null);
   const [activeResponseTab, setActiveResponseTab] = useState("body");
+  const [historyEntries, setHistoryEntries] = useState([]);
+  const [isHistoryLoading, setIsHistoryLoading] = useState(true);
+  const [historyError, setHistoryError] = useState("");
+  const [quotaInfo, setQuotaInfo] = useState(null);
 
   const responseBodyView = useMemo(() => {
     if (!responseData) return "";
@@ -57,6 +63,47 @@ export default function ApiTesterUI({ defaults }) {
     setHeaders((prev) => prev.filter((row) => row.id !== id));
   }
 
+  const loadHistory = useCallback(async () => {
+    setIsHistoryLoading(true);
+    setHistoryError("");
+
+    const result = await fetchApiHistory();
+    if (!result.ok) {
+      setHistoryError(result.error);
+      setHistoryEntries([]);
+      setIsHistoryLoading(false);
+      return;
+    }
+
+    setHistoryEntries(result.items);
+    setIsHistoryLoading(false);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadInitialHistory() {
+      const result = await fetchApiHistory();
+      if (cancelled) return;
+
+      if (!result.ok) {
+        setHistoryError(result.error);
+        setHistoryEntries([]);
+        setIsHistoryLoading(false);
+        return;
+      }
+
+      setHistoryEntries(result.items);
+      setHistoryError("");
+      setIsHistoryLoading(false);
+    }
+
+    loadInitialHistory();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   function onClear() {
     setUrl("");
     setBody("");
@@ -80,7 +127,7 @@ export default function ApiTesterUI({ defaults }) {
     setRequestError("");
     setStatus("Sending request...");
 
-    const result = await sendRequest({
+    const result = await runApiRequest({
       method,
       url,
       headers: buildHeadersObject(headers),
@@ -96,8 +143,32 @@ export default function ApiTesterUI({ defaults }) {
     }
 
     setResponseData(result.response);
+    if (result.historyEntry) {
+      setHistoryEntries((prev) => [result.historyEntry, ...prev.filter((entry) => entry.id !== result.historyEntry.id)]);
+    }
+    if (result.quota) {
+      setQuotaInfo(result.quota);
+    }
     setStatus("Response received");
     setIsSending(false);
+  }
+
+  function onReplayHistory(entry) {
+    if (!entry?.request) return;
+
+    setMethod(entry.request.method || "GET");
+    setUrl(entry.request.url || "");
+    const requestHeaders = Object.entries(entry.request.headers || {}).map(([key, value]) => ({
+      id: createHeaderRow().id,
+      key,
+      value,
+    }));
+    setHeaders(requestHeaders.length > 0 ? requestHeaders : [createHeaderRow()]);
+    setBody(typeof entry.request.body === "string" ? entry.request.body : "");
+    if (entry.response) {
+      setResponseData(entry.response);
+      setStatus("History replayed");
+    }
   }
 
   return (
@@ -123,6 +194,11 @@ export default function ApiTesterUI({ defaults }) {
       </div>
 
       {requestError ? <p className="tool-error">{requestError}</p> : null}
+      {quotaInfo ? (
+        <p className="api-quota-note">
+          Remaining requests in current 24h window: {quotaInfo.remaining} / {quotaInfo.limit}
+        </p>
+      ) : null}
 
       <div className="api-grid">
         <section className="api-panel">
@@ -280,6 +356,14 @@ export default function ApiTesterUI({ defaults }) {
           )}
         </section>
       </div>
+
+      <ApiTesterHistory
+        entries={historyEntries}
+        isLoading={isHistoryLoading}
+        error={historyError}
+        onRefresh={loadHistory}
+        onReplay={onReplayHistory}
+      />
     </section>
   );
 }
