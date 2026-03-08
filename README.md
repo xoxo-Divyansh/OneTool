@@ -1,3 +1,11 @@
+# OneTool
+
+OneTool is a single workspace for everyday dev/productivity utilities, starting with JSON formatting and API testing, with user auth and usage tracking foundations already in place.
+## Problem It Solves
+
+Developers and teams lose time switching between many small utility websites (JSON, API test, history, auth state, future billing limits).  
+OneTool reduces context switching by bringing these workflows into one product with shared identity and a consistent dashboard.
+
 ## 🧠 OneTool SaaS — Full Production Architecture
 
 - `Think of OneTool like this:`
@@ -21,8 +29,7 @@
    Analytics + History
 _________________________________________________________________________________________
 ## 🧠 Ultimate OneTool SaaS Folder Structure
-         src
-         
+         src 
          │
          ├── app
          │   │   layout.jsx
@@ -200,15 +207,6 @@ ________________________________________________________________________________
              └── theme.css
 
 _________________________________________________________________________________________
-
-
-# OneTool
-
-OneTool is a single workspace for everyday dev/productivity utilities, starting with JSON formatting and API testing, with user auth and usage tracking foundations already in place.
-## Problem It Solves
-
-Developers and teams lose time switching between many small utility websites (JSON, API test, history, auth state, future billing limits).  
-OneTool reduces context switching by bringing these workflows into one product with shared identity and a consistent dashboard.
 
 ## Core Product Idea
 
