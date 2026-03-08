@@ -1,378 +1,259 @@
 # OneTool
 
-OneTool is a single workspace for everyday dev/productivity utilities, starting with JSON formatting and API testing, with user auth and usage tracking foundations already in place.
-## Problem It Solves
+OneTool is a Next.js App Router workspace for authenticated utility tools.
+It combines a single auth session, shared dashboard, and categorized tools (Developer, General, Student) under one product surface.
 
-Developers and teams lose time switching between many small utility websites (JSON, API test, history, auth state, future billing limits).  
-OneTool reduces context switching by bringing these workflows into one product with shared identity and a consistent dashboard.
+## 1. Product Scope
 
-## 🧠 OneTool SaaS — Full Production Architecture
+### Current goals
+- Centralize daily utility workflows inside one authenticated app.
+- Provide reusable architecture for adding tools without rewriting navigation/auth/layout.
+- Keep client/server boundaries explicit for maintainability and production scaling.
 
-- `Think of OneTool like this:`
+### Current implemented tools
+- JSON Formatter (`/tools/developer/json-formatter`)
+- API Tester with persisted history and quota checks (`/tools/developer/api-tester`)
+- Image Compressor (`/tools/general/image-compressor`)
 
-                INTERNET
-                    │
-                    ▼
-             Next.js Frontend
-                    │
-                    ▼
-            API Layer (Next.js API)
-                    │
-        ┌───────────┼───────────┐
-        ▼           ▼           ▼
-   Auth System   Tool Engine   Billing System
-        │           │           │
-        ▼           ▼           ▼
-       DB        Tool Services  Payment Gateway
-        │
-        ▼
-   Analytics + History
-_________________________________________________________________________________________
-## 🧠 Ultimate OneTool SaaS Folder Structure
-         src 
-         │
-         ├── app
-         │   │   layout.jsx
-         │   │   page.jsx
-         │   │   globals.css
-         │   │   providers.jsx
-         │   │
-         │   ├── (auth)
-         │   │   ├── login
-         │   │   │     page.jsx
-         │   │   ├── register
-         │   │   │     page.jsx
-         │   │   └── layout.jsx
-         │   │
-         │   ├── (dashboard)
-         │   │   ├── dashboard
-         │   │   │     page.jsx
-         │   │   │
-         │   │   ├── tools
-         │   │   │   ├── api-tester
-         │   │   │   │      page.jsx
-         │   │   │   │
-         │   │   │   ├── json-formatter
-         │   │   │   │      page.jsx
-         │   │   │   │
-         │   │   │   └── jwt-decoder
-         │   │   │          page.jsx
-         │   │   │
-         │   │   └── layout.jsx
-         │   │
-         │   └── api
-         │       ├── auth
-         │       │   ├── login
-         │       │   │     route.js
-         │       │   ├── register
-         │       │   │     route.js
-         │       │   ├── logout
-         │       │   │     route.js
-         │       │   └── me
-         │       │         route.js
-         │       │
-         │       ├── tools
-         │       │   ├── api-tester
-         │       │   │      route.js
-         │       │   │
-         │       │   ├── json-formatter
-         │       │   │      route.js
-         │       │   │
-         │       │   └── jwt-decoder
-         │       │          route.js
-         │       │
-         │       └── billing
-         │           ├── checkout
-         │           │     route.js
-         │           └── webhook
-         │                 route.js
-         │
-         │
-         ├── modules
-         │
-         │   ├── auth
-         │   │   ├── auth.logic.js
-         │   │   ├── auth.service.js
-         │   │   └── auth.schema.js
-         │   │
-         │   ├── dashboard
-         │   │   ├── dashboard.logic.js
-         │   │   ├── dashboard.service.js
-         │   │   └── dashboard.ui.jsx
-         │   │
-         │   ├── tools
-         │   │
-         │   │   ├── apiTester
-         │   │   │   ├── apiTester.logic.js
-         │   │   │   ├── apiTester.service.js
-         │   │   │   ├── apiTester.ui.jsx
-         │   │   │   └── apiTester.types.js
-         │   │   │
-         │   │   ├── jsonFormatter
-         │   │   │   ├── json.logic.js
-         │   │   │   ├── json.service.js
-         │   │   │   ├── json.ui.jsx
-         │   │   │   └── tree
-         │   │   │       ├── TreeNode.jsx
-         │   │   │       └── tree.utils.js
-         │   │   │
-         │   │   └── jwtDecoder
-         │   │       ├── jwt.logic.js
-         │   │       ├── jwt.service.js
-         │   │       └── jwt.ui.jsx
-         │   │
-         │   └── billing
-         │       ├── billing.logic.js
-         │       ├── billing.service.js
-         │       └── billing.ui.jsx
-         │
-         │
-         ├── components
-         │
-         │   ├── ui
-         │   │   ├── Button.jsx
-         │   │   ├── Input.jsx
-         │   │   ├── Card.jsx
-         │   │   └── Modal.jsx
-         │   │
-         │   ├── layout
-         │   │   ├── Navbar.jsx
-         │   │   ├── Sidebar.jsx
-         │   │   ├── Header.jsx
-         │   │   └── LayoutShell.jsx
-         │   │
-         │   └── common
-         │       ├── ToolCard.jsx
-         │       └── Loader.jsx
-         │
-         │
-         ├── services
-         │
-         │   ├── apiClient.js
-         │   ├── auth.service.js
-         │   └── toolHistory.service.js
-         │
-         │
-         ├── lib
-         │
-         │   ├── db
-         │   │   ├── connect.js
-         │   │   └── models
-         │   │       ├── user.model.js
-         │   │       ├── session.model.js
-         │   │       ├── subscription.model.js
-         │   │       ├── payment.model.js
-         │   │       └── toolHistory.model.js
-         │   │
-         │   ├── auth
-         │   │   ├── jwt.js
-         │   │   ├── cookies.js
-         │   │   └── requireAuth.js
-         │   │
-         │   └── validators
-         │       ├── auth.validator.js
-         │       └── tool.validator.js
-         │
-         │
-         ├── store
-         │
-         │   ├── index.js
-         │   ├── StoreProvider.jsx
-         │   │
-         │   ├── auth
-         │   │   └── auth.store.js
-         │   │
-         │   └── app
-         │       └── app.store.js
-         │
-         │
-         ├── hooks
-         │   ├── useAuth.js
-         │   └── useToolHistory.js
-         │
-         │
-         ├── middlewares
-         │   ├── auth.middleware.js
-         │   ├── subscription.middleware.js
-         │   └── rateLimit.middleware.js
-         │
-         │
-         ├── utils
-         │   ├── formatters.js
-         │   ├── helpers.js
-         │   └── constants.js
-         │
-         │
-         └── styles
-             └── theme.css
+### Scaffolded (coming soon)
+- PDF Generator (`/tools/general/pdf-generator`)
+- Study Timer (`/tools/student/study-timer`)
 
-_________________________________________________________________________________________
+## 2. Tech Stack
 
-## Core Product Idea
+- Framework: Next.js `16.1.6` (App Router)
+- Runtime UI: React `18.x`
+- State: Zustand
+- Database: MongoDB + Mongoose
+- Auth: JWT via `jsonwebtoken`, password hashing via `bcryptjs`
+- Editors/UI libs: Monaco, Lucide icons
+- Styling: global CSS + utility classes
 
-- One account, one dashboard, multiple tools
-- Fast utility actions without changing tabs/platforms
-- Expandable architecture for usage tracking, plans, and payments
+## 3. High-Level Architecture
 
-## Current Working Flow (Implemented)
-
-1. User opens landing page (`/`) and sees product positioning + tool entry points.
-2. User can access dashboard (`/dashboard`) with tool cards.
-3. User opens tool routes:
-   - `/tools/json`
-   - `/tools/api-tester`
-4. User auth API is available:
-   - `POST /auth/register`
-   - `POST /auth/login`
-   - `POST /auth/logout`
-5. On register/login:
-   - user is persisted in MongoDB
-   - password is hashed using `bcryptjs`
-   - access + refresh JWT cookies are set (`httpOnly`)
-6. DB connectivity can be validated using:
-   - `GET /api/test-db` (connect + `User.countDocuments()`)
-
-## Features Available Right Now
-
-- Next.js App Router project setup
-- MongoDB integration via Mongoose with connection caching
-- User model and auth lifecycle (register, login, logout)
-- JWT-based cookie session pattern
-- Dashboard module and reusable layout shell
-- JSON Formatter tool screen scaffold
-- API Tester tool screen scaffold
-- Tool-centric UI components (cards, sidebar, header)
-
-## Tech Stack
-
-- Next.js 16 (App Router)
-- React 19
-- MongoDB + Mongoose
-- JWT (`jsonwebtoken`)
-- Password hashing (`bcryptjs`)
-- Tailwind CSS 4
-
-## Architecture Snapshot
-
-- `src/app/*`: routing + route handlers
-- `src/modules/*`: feature modules (dashboard/tools)
-- `src/lib/db/*`: DB connection + models
-- `src/lib/auth/*`: JWT and cookie utilities
-- `src/components/*`: shared UI/layout
-- `src/store/*`: app-level state provider
-
-## Main Build Concerns (Product + Engineering)
-
-1. **Security baseline**
-   - Move real secrets out of repo history and rotate exposed DB credentials.
-   - Add request validation/sanitization for auth payloads.
-   - Add token refresh/rotation flow and session invalidation strategy.
-
-2. **Data model correctness**
-   - `User` schema has typos (`emum`, `avtar`) that should be corrected.
-   - `subscription`, `session`, `payment` files are currently schema notes, not executable Mongoose models.
-
-3. **Auth boundaries**
-   - Protected routes/middleware are not enforced yet.
-   - No role-based authorization checks yet for admin-only capabilities.
-
-4. **Tool execution depth**
-   - JSON and API Tester are UI scaffolds; full request/response and formatter engines need implementation.
-   - Tool history persistence exists conceptually (`ToolHistory` model) but is not connected to tool actions.
-
-5. **State and API integration**
-   - `auth.service.js` and `auth.store.js` are currently empty.
-   - Client-side auth/session hydration flow is not completed.
-
-6. **Launch readiness**
-   - Missing automated tests (unit + API integration + auth flow tests).
-   - Missing observability (request logs, error tracking, metrics).
-   - Missing API docs/versioning strategy for scale.
-
-## What Makes OneTool Interesting
-
-- Single interface for repeated daily utility tasks
-- Shared user identity across all tools
-- Extensible model for usage analytics and subscription plans
-- Modular feature structure for quickly adding new tools
-
-## Current Status (Honest Snapshot)
-
-- **Production-ready foundation:** partial
-- **Auth basics:** working
-- **Database connectivity:** working
-- **Core tools depth:** early-stage
-- **Billing/subscription:** planned structure, not implemented
-
-## Suggested Near-Term Feature Additions
-
-1. Complete JSON Formatter:
-   - parse, pretty/minify, validation errors, copy/download
-2. Complete API Tester:
-   - method/url/headers/body editor, response time/status/body panel
-3. Add tool history logging:
-   - persist each run to `ToolHistory`, show recent runs in dashboard
-4. Add auth guard middleware:
-   - protect dashboard/tool routes for authenticated users
-5. Add plan limits:
-   - free/pro usage caps tied to tool runs
-6. Add team-ready polish:
-   - profile settings, API keys, export/import sessions
-
-## Local Setup
-
-1. Install dependencies:
-
-```bash
-npm install
+```text
+Browser UI (App Router pages)
+  -> Client hooks/store/services
+  -> API route handlers (/api/*)
+  -> DB/Auth libraries (lib/*)
+  -> MongoDB
 ```
 
-2. Create `.env.local`:
+### Core production boundaries
+- `src/app/*`: route entry points only (page/layout/route handlers)
+- `src/modules/*`: feature-level business/UI composition (dashboard, tools)
+- `src/components/*`: reusable presentation primitives
+- `src/services/*`: client-side API calls
+- `src/store/*`: global client state and hydration actions
+- `src/lib/*`: server-side shared libraries (DB, auth, guards)
+
+This split is the main separation-of-concerns strategy in this codebase.
+
+## 4. Separation of Concerns (Detailed)
+
+### Routing vs feature logic
+- App routes under `src/app` are thin wrappers.
+- Route pages import module pages (`src/modules/*`) instead of embedding logic inline.
+
+### UI vs business logic
+- Tool logic is isolated in `*.logic.jsx` files.
+- Tool rendering/state UI is in `*.ui.jsx` files.
+- Examples:
+  - `src/modules/tools/jsonFormatter/json.logic.jsx`
+  - `src/modules/tools/jsonFormatter/json.ui.jsx`
+  - `src/modules/tools/apiTester/apiTester.logic.jsx`
+  - `src/modules/tools/apiTester/apiTester.ui.jsx`
+
+### Auth boundary
+- HTTP auth API lives in `src/app/api/auth/*`.
+- Cookie/token helpers are in `src/lib/auth/*`.
+- Client auth state and calls are in:
+  - `src/services/auth.service.js`
+  - `src/store/auth.store.js`
+  - `src/hooks/useAuth.js`
+
+### Data boundary
+- DB connection is centralized in `src/lib/db/models/connect.js`.
+- Mongoose models are in `src/lib/db/models/*`.
+- API routes call models through this shared connection layer.
+
+### Navigation/source-of-truth boundary
+- Tool/category metadata is centralized in `src/lib/tools/toolRegistry.js`.
+- Sidebar, dashboard, and tool listings read from this registry.
+- This avoids duplicate hardcoded route lists across UI surfaces.
+
+## 5. Route Map
+
+### Web routes
+
+| Route | Purpose | Auth |
+|---|---|---|
+| `/` | Landing page, CTA to tools/dashboard | Public |
+| `/auth/login` | Login form | Public |
+| `/auth/register` | Register form | Public |
+| `/dashboard` | Workspace dashboard | Protected |
+| `/tools` | Tools directory/search by category | Protected |
+| `/tools/developer` | Developer category listing | Protected |
+| `/tools/general` | General category listing | Protected |
+| `/tools/student` | Student category listing | Protected |
+| `/tools/developer/json-formatter` | JSON formatter tool | Protected |
+| `/tools/developer/api-tester` | API tester tool | Protected |
+| `/tools/general/image-compressor` | Image compression tool | Protected |
+| `/tools/general/pdf-generator` | PDF tool scaffold | Protected |
+| `/tools/student/study-timer` | Study timer scaffold | Protected |
+
+### API routes
+
+| Route | Method | Purpose | Auth |
+|---|---|---|---|
+| `/api/auth/register` | `POST` | Create user + set auth cookies | Public |
+| `/api/auth/login` | `POST` | Login + set auth cookies | Public |
+| `/api/auth/logout` | `POST` | Clear auth cookies | Public |
+| `/api/auth/me` | `GET` | Return current authenticated user | Required |
+| `/api/test-db` | `GET` | DB connectivity/health check | Public |
+| `/api/tools/api-tester/run` | `POST` | Execute HTTP request + persist run history + quota | Required |
+| `/api/tools/api-tester/history` | `GET` | Paginated API tester history | Required |
+
+### Route protection
+- `src/proxy.js` protects `/dashboard/:path*` and `/tools/:path*`.
+- Access token is checked from cookies; unauthenticated users are redirected to `/auth/login`.
+
+## 6. Feature Flow (Step-by-Step)
+
+### A) Authentication flow
+1. User submits login/register form.
+2. Client calls `auth.service` (`/api/auth/*`).
+3. API route validates payload, connects DB, checks/creates user.
+4. JWT access/refresh cookies are set (`httpOnly`, `sameSite=lax`, `secure` in production).
+5. Zustand auth store updates `user` state.
+6. Protected pages are allowed via `proxy.js` cookie check.
+
+### B) API Tester flow
+1. User configures method/url/headers/body in UI.
+2. `apiTester.logic.jsx` validates URL/body and posts to `/api/tools/api-tester/run`.
+3. API route enforces auth and daily quota.
+4. Server fetches upstream URL, normalizes response payload, stores `ToolHistory`.
+5. Client renders response panel and updates history state.
+6. History tab fetches paginated records via `/api/tools/api-tester/history`.
+
+### C) JSON Formatter flow
+1. User enters JSON text.
+2. `json.logic.jsx` parses and computes line/column on parse failures.
+3. UI supports prettify/minify and tree/formatting helpers.
+
+## 7. Directory Structure (Current)
+
+```text
+src/
+  app/
+    api/
+      auth/{login,register,logout,me}/route.js
+      tools/api-tester/{run,history}/route.js
+      test-db/route.js
+    auth/{layout.jsx,login/page.jsx,register/page.jsx,auth.css}
+    dashboard/{layout.jsx,page.jsx}
+    tools/
+      layout.jsx
+      page.jsx
+      developer/{page.jsx,api-tester/page.jsx,json-formatter/page.jsx}
+      general/{page.jsx,image-compressor/page.jsx,pdf-generator/page.jsx}
+      student/{page.jsx,study-timer/page.jsx}
+    globals.css
+    layout.jsx
+    page.jsx
+  components/
+    auth/{LoginForm.jsx,RegisterForm.jsx}
+    common/Navbar.jsx
+    layout/{LayoutShell.jsx,Sidebar.jsx,Header.jsx,navItems.js}
+    tools/{ToolCard.jsx,ToolLayout.jsx}
+    ToolCard.jsx
+  hooks/useAuth.js
+  lib/
+    auth/{cookies.js,jwt.js,requireAuth.js}
+    db/models/{connect.js,user.model.js,toolHistory.model.js,...}
+    tools/toolRegistry.js
+  modules/
+    dashboard/{dashboard.logic.jsx,dashboard.ui.jsx,dashboard.page.jsx}
+    tools/
+      apiTester/{apiTester.logic.jsx,apiTester.ui.jsx,apiTester.page.jsx,...}
+      jsonFormatter/{json.logic.jsx,json.ui.jsx,json.page.jsx,tree/*}
+  services/auth.service.js
+  store/{auth.store.js,index.js,StoreProvider.jsx,app.context.jsx}
+  proxy.js
+```
+
+## 8. Environment Variables
+
+Create `.env.local`:
 
 ```env
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
+API_TESTER_DAILY_LIMIT=100
 ```
 
-3. Start dev server:
+Notes:
+- `API_TESTER_DAILY_LIMIT` is optional. Default is `100` requests per user in a rolling 24h window.
 
+## 9. Local Development
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Run dev server:
 ```bash
 npm run dev
 ```
 
-4. Verify DB:
+3. Open app:
+```text
+http://localhost:3000
+```
 
-```bash
+4. Optional DB health check:
+```text
 GET http://localhost:3000/api/test-db
 ```
 
-## API Endpoints (Current)
+## 10. NPM Scripts
 
-- `POST /auth/register`
-- `POST /auth/login`
-- `POST /auth/logout`
-- `GET /api/test-db`
+- `npm run dev` -> Next dev server on port `3000` with Turbopack
+- `npm run build` -> Production build
+- `npm run start` -> Start production server on port `3000`
 
-## Product Pitch (Short)
+## 11. Production-Grade Practices Already Applied
 
-OneTool is a focused utility workspace that removes tab-switching overhead for developers.  
-It combines authentication, dashboard access, and multi-tool workflows in one platform, starting with JSON and API utilities and expanding toward history, plans, and team-scale productivity features.
+- Shared DB connection cache for server handlers.
+- Cookie-based auth with `httpOnly` cookies.
+- Protected route gate at edge/proxy layer for `/dashboard` and `/tools`.
+- API input normalization for auth (trim/lowercase email, password checks).
+- Tool metadata registry driving navigation to reduce route drift.
+- Feature modularization (`page -> module -> logic/ui`).
+- API Tester safeguards:
+  - HTTP/HTTPS validation
+  - blocked sensitive headers (`host`, `content-length`, `cookie`)
+  - per-user quota enforcement
+  - persisted request/response history
 
-export const toolCategories = [
-  {
-    id: "developer",
-    label: "Developer Tools",
-    tools: [
-      { id: "api-tester", label: "API Tester", description: "...", route: "/tools/developer/api-tester" },
-      { id: "json-formatter", label: "JSON Formatter", ... },
-    ],
-  },
-  {
-    id: "image",
-    label: "Image Tools",
-    tools: [ ... ],
-  },
-  // ...
-];
+## 12. Current Gaps / Next Hardening Steps
 
+- Add request schema validation layer (e.g. Zod) for all API payloads.
+- Add refresh token rotation/revocation strategy and session model enforcement.
+- Convert `session/subscription/payment` files from schema notes to real Mongoose models.
+- Add automated tests (unit + API integration + auth E2E).
+- Add lint/test scripts in `package.json` CI pipeline.
+- Add observability (structured logs + error tracking + metrics).
 
+## 13. Contribution Guidance
+
+When adding a new tool, follow this flow:
+1. Add tool metadata to `src/lib/tools/toolRegistry.js`.
+2. Create route under `src/app/tools/<category>/<tool>/page.jsx`.
+3. Implement module logic/UI under `src/modules/tools/<tool>/`.
+4. Add API handlers (if needed) under `src/app/api/tools/<tool>/`.
+5. Keep UI reusable components under `src/components/tools/`.
+6. Update README route table and feature matrix.
+
+This keeps feature growth structured, traceable, and production-aligned.
