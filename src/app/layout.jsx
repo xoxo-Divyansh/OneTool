@@ -18,6 +18,8 @@ const monoFont = JetBrains_Mono({
   variable: "--font-mono",
 });
 
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">

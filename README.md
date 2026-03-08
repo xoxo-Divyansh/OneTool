@@ -1,7 +1,210 @@
+## 🧠 OneTool SaaS — Full Production Architecture
+
+- `Think of OneTool like this:`
+
+                INTERNET
+                    │
+                    ▼
+             Next.js Frontend
+                    │
+                    ▼
+            API Layer (Next.js API)
+                    │
+        ┌───────────┼───────────┐
+        ▼           ▼           ▼
+   Auth System   Tool Engine   Billing System
+        │           │           │
+        ▼           ▼           ▼
+       DB        Tool Services  Payment Gateway
+        │
+        ▼
+   Analytics + History
+_________________________________________________________________________________________
+## 🧠 Ultimate OneTool SaaS Folder Structure
+         src
+         
+         │
+         ├── app
+         │   │   layout.jsx
+         │   │   page.jsx
+         │   │   globals.css
+         │   │   providers.jsx
+         │   │
+         │   ├── (auth)
+         │   │   ├── login
+         │   │   │     page.jsx
+         │   │   ├── register
+         │   │   │     page.jsx
+         │   │   └── layout.jsx
+         │   │
+         │   ├── (dashboard)
+         │   │   ├── dashboard
+         │   │   │     page.jsx
+         │   │   │
+         │   │   ├── tools
+         │   │   │   ├── api-tester
+         │   │   │   │      page.jsx
+         │   │   │   │
+         │   │   │   ├── json-formatter
+         │   │   │   │      page.jsx
+         │   │   │   │
+         │   │   │   └── jwt-decoder
+         │   │   │          page.jsx
+         │   │   │
+         │   │   └── layout.jsx
+         │   │
+         │   └── api
+         │       ├── auth
+         │       │   ├── login
+         │       │   │     route.js
+         │       │   ├── register
+         │       │   │     route.js
+         │       │   ├── logout
+         │       │   │     route.js
+         │       │   └── me
+         │       │         route.js
+         │       │
+         │       ├── tools
+         │       │   ├── api-tester
+         │       │   │      route.js
+         │       │   │
+         │       │   ├── json-formatter
+         │       │   │      route.js
+         │       │   │
+         │       │   └── jwt-decoder
+         │       │          route.js
+         │       │
+         │       └── billing
+         │           ├── checkout
+         │           │     route.js
+         │           └── webhook
+         │                 route.js
+         │
+         │
+         ├── modules
+         │
+         │   ├── auth
+         │   │   ├── auth.logic.js
+         │   │   ├── auth.service.js
+         │   │   └── auth.schema.js
+         │   │
+         │   ├── dashboard
+         │   │   ├── dashboard.logic.js
+         │   │   ├── dashboard.service.js
+         │   │   └── dashboard.ui.jsx
+         │   │
+         │   ├── tools
+         │   │
+         │   │   ├── apiTester
+         │   │   │   ├── apiTester.logic.js
+         │   │   │   ├── apiTester.service.js
+         │   │   │   ├── apiTester.ui.jsx
+         │   │   │   └── apiTester.types.js
+         │   │   │
+         │   │   ├── jsonFormatter
+         │   │   │   ├── json.logic.js
+         │   │   │   ├── json.service.js
+         │   │   │   ├── json.ui.jsx
+         │   │   │   └── tree
+         │   │   │       ├── TreeNode.jsx
+         │   │   │       └── tree.utils.js
+         │   │   │
+         │   │   └── jwtDecoder
+         │   │       ├── jwt.logic.js
+         │   │       ├── jwt.service.js
+         │   │       └── jwt.ui.jsx
+         │   │
+         │   └── billing
+         │       ├── billing.logic.js
+         │       ├── billing.service.js
+         │       └── billing.ui.jsx
+         │
+         │
+         ├── components
+         │
+         │   ├── ui
+         │   │   ├── Button.jsx
+         │   │   ├── Input.jsx
+         │   │   ├── Card.jsx
+         │   │   └── Modal.jsx
+         │   │
+         │   ├── layout
+         │   │   ├── Navbar.jsx
+         │   │   ├── Sidebar.jsx
+         │   │   ├── Header.jsx
+         │   │   └── LayoutShell.jsx
+         │   │
+         │   └── common
+         │       ├── ToolCard.jsx
+         │       └── Loader.jsx
+         │
+         │
+         ├── services
+         │
+         │   ├── apiClient.js
+         │   ├── auth.service.js
+         │   └── toolHistory.service.js
+         │
+         │
+         ├── lib
+         │
+         │   ├── db
+         │   │   ├── connect.js
+         │   │   └── models
+         │   │       ├── user.model.js
+         │   │       ├── session.model.js
+         │   │       ├── subscription.model.js
+         │   │       ├── payment.model.js
+         │   │       └── toolHistory.model.js
+         │   │
+         │   ├── auth
+         │   │   ├── jwt.js
+         │   │   ├── cookies.js
+         │   │   └── requireAuth.js
+         │   │
+         │   └── validators
+         │       ├── auth.validator.js
+         │       └── tool.validator.js
+         │
+         │
+         ├── store
+         │
+         │   ├── index.js
+         │   ├── StoreProvider.jsx
+         │   │
+         │   ├── auth
+         │   │   └── auth.store.js
+         │   │
+         │   └── app
+         │       └── app.store.js
+         │
+         │
+         ├── hooks
+         │   ├── useAuth.js
+         │   └── useToolHistory.js
+         │
+         │
+         ├── middlewares
+         │   ├── auth.middleware.js
+         │   ├── subscription.middleware.js
+         │   └── rateLimit.middleware.js
+         │
+         │
+         ├── utils
+         │   ├── formatters.js
+         │   ├── helpers.js
+         │   └── constants.js
+         │
+         │
+         └── styles
+             └── theme.css
+
+_________________________________________________________________________________________
+
+
 # OneTool
 
 OneTool is a single workspace for everyday dev/productivity utilities, starting with JSON formatting and API testing, with user auth and usage tracking foundations already in place.
-
 ## Problem It Solves
 
 Developers and teams lose time switching between many small utility websites (JSON, API test, history, auth state, future billing limits).  
@@ -121,19 +324,26 @@ OneTool reduces context switching by bringing these workflows into one product w
 ## Local Setup
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
+
 2. Create `.env.local`:
+
 ```env
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 ```
+
 3. Start dev server:
+
 ```bash
 npm run dev
 ```
+
 4. Verify DB:
+
 ```bash
 GET http://localhost:3000/api/test-db
 ```
@@ -149,3 +359,22 @@ GET http://localhost:3000/api/test-db
 
 OneTool is a focused utility workspace that removes tab-switching overhead for developers.  
 It combines authentication, dashboard access, and multi-tool workflows in one platform, starting with JSON and API utilities and expanding toward history, plans, and team-scale productivity features.
+
+export const toolCategories = [
+  {
+    id: "developer",
+    label: "Developer Tools",
+    tools: [
+      { id: "api-tester", label: "API Tester", description: "...", route: "/tools/developer/api-tester" },
+      { id: "json-formatter", label: "JSON Formatter", ... },
+    ],
+  },
+  {
+    id: "image",
+    label: "Image Tools",
+    tools: [ ... ],
+  },
+  // ...
+];
+
+
