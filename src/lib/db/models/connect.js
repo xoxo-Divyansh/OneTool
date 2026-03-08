@@ -1,10 +1,5 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("MONGODB_URI not defined in environment variables");
-}
 let cached = globalThis.mongoose;
 
 if (!cached) {
@@ -12,10 +7,18 @@ if (!cached) {
 }
 
 export async function connectDB() {
+  const mongoUri = process.env.MONGODB_URI;
+
+  if (!mongoUri) {
+    throw new Error(
+      "MONGODB_URI not defined. Set it in Vercel Environment Variables.",
+    );
+  }
+
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI, {
+    cached.promise = mongoose.connect(mongoUri, {
       bufferCommands: false,
     });
   }
