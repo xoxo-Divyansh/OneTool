@@ -3,6 +3,7 @@ const BASE = "/api/auth";
 async function request(url, options = {}) {
   const res = await fetch(url, {
     credentials: "include",
+    cache: "no-store",
     headers: { "Content-Type": "application/json" },
     ...options,
   });

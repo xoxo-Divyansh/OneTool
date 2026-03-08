@@ -4,6 +4,8 @@ import { connectDB } from "@/lib/db/models/connect";
 import User from "@/lib/db/models/user.model";
 import { signToken } from "@/lib/auth/jwt";
 
+export const runtime = "nodejs";
+
 export async function POST(req) {
   try {
     await connectDB();
@@ -88,8 +90,15 @@ export async function POST(req) {
     return res;
   } catch (error) {
     console.error("[auth/login] Internal server error:", error);
+    const message =
+      error instanceof Error &&
+      (error.message.includes("MONGODB_URI") ||
+        error.message.includes("JWT_SECRET"))
+        ? "Server configuration error"
+        : "Internal Server Error";
+
     return NextResponse.json(
-      { success: false, message: "Internal Server Error" },
+      { success: false, message },
       { status: 500 },
     );
   }
