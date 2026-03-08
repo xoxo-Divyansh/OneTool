@@ -7,11 +7,23 @@ async function request(url, options = {}) {
     ...options,
   });
 
-  const data = await res.json();
+  const contentType = res.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+  const data = isJson ? await res.json() : null;
+
   if (!res.ok) {
-    throw new Error(data?.message || "Request failed");
+    if (data?.message) {
+      throw new Error(data.message);
+    }
+
+    if (!isJson) {
+      throw new Error("Request failed: unexpected non-JSON server response");
+    }
+
+    throw new Error("Request failed");
   }
-  return data;
+
+  return data || { success: true };
 }
 
 export async function register({ name, email, password }) {
@@ -33,6 +45,5 @@ export async function logout() {
 }
 
 export async function me() {
-  // current route sits under /auth/me; keep consistency
   return request(`${BASE}/me`);
 }
