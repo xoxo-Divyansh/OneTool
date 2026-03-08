@@ -1,44 +1,62 @@
-import { signToken } from "@/lib/auth/jwt";
-import { connectDB } from "@/lib/db/connect";
-import User from "@/lib/db/models/user.model";
-import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import { connectDB } from "@/lib/db/models/connect";
+import User from "@/lib/db/models/user.model";
+import { signToken } from "@/lib/auth/jwt";
 
 export async function POST(req) {
   await connectDB();
 
   const { email, password } = await req.json();
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  const normalizedPassword = String(password || "");
 
-  if (!email || !password) {
-    return NextResponse.json({ message: "Missing fields" }, { status: 400 });
+  if (!normalizedEmail || !normalizedPassword) {
+    return NextResponse.json({ message: "Missing credentials" }, { status: 400 });
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: normalizedEmail });
 
   if (!user) {
-    return NextResponse.json(
-      { message: "Invalid credentials" },
-      { status: 401 },
-    );
+    return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
   }
 
-  const match = await bcrypt.compare(password, user.passwordHash);
+  const hash = user.passwordHash || user.password;
+  if (!hash || typeof hash !== "string") {
+    return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
+  }
+
+  let match = false;
+  const looksLikeBcryptHash = hash.startsWith("$2a$") || hash.startsWith("$2b$") || hash.startsWith("$2y$");
+
+  if (looksLikeBcryptHash) {
+    try {
+      match = await bcrypt.compare(normalizedPassword, hash);
+    } catch {
+      return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
+    }
+  } else {
+    // Backward compatibility for legacy users with plain-text password storage.
+    match = normalizedPassword === hash;
+    if (match) {
+      const migratedHash = await bcrypt.hash(normalizedPassword, 12);
+      await User.updateOne(
+        { _id: user._id },
+        { $set: { passwordHash: migratedHash }, $unset: { password: 1 } },
+      );
+    }
+  }
 
   if (!match) {
-    return NextResponse.json(
-      { message: "Invalid credentials" },
-      { status: 401 },
-    );
+    return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
   }
 
   const accessToken = signToken({ id: user._id });
   const refreshToken = signToken({ id: user._id }, "7d");
 
-  user.lastLoginAt = new Date();
-  await user.save();
-
   const res = NextResponse.json({
     success: true,
+    message: "Login successful",
     user: {
       id: user._id,
       name: user.name,

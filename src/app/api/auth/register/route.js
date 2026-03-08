@@ -1,5 +1,5 @@
 import { signToken } from "@/lib/auth/jwt";
-import { connectDB } from "@/lib/db/connect";
+import { connectDB } from "@/lib/db/models/connect";
 import User from "@/lib/db/models/user.model";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
@@ -8,12 +8,15 @@ export async function POST(req) {
   await connectDB();
 
   const { name, email, password } = await req.json();
+  const normalizedName = String(name || "").trim();
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  const normalizedPassword = String(password || "");
 
-  if (!name || !email || !password) {
+  if (!normalizedName || !normalizedEmail || !normalizedPassword) {
     return NextResponse.json({ message: "Missing fields" }, { status: 400 });
   }
 
-  const existing = await User.findOne({ email });
+  const existing = await User.findOne({ email: normalizedEmail });
 
   if (existing) {
     return NextResponse.json(
@@ -22,11 +25,11 @@ export async function POST(req) {
     );
   }
 
-  const passwordHash = await bcrypt.hash(password, 12);
+  const passwordHash = await bcrypt.hash(normalizedPassword, 12);
 
   const user = await User.create({
-    name,
-    email,
+    name: normalizedName,
+    email: normalizedEmail,
     passwordHash,
   });
 

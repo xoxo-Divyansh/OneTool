@@ -7,7 +7,7 @@ function decodeBase64Url(value) {
   return atob(padded);
 }
 
-export async function middleware(req) {
+export async function proxy(req) {
   const { pathname } = req.nextUrl;
 
   if (

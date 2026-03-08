@@ -2,7 +2,7 @@ import {
   getAuthenticatedUserId,
   unauthorizedResponse,
 } from "@/lib/auth/requireAuth";
-import { connectDB } from "@/lib/db/connect";
+import { connectDB } from "@/lib/db/models/connect";
 import User from "@/lib/db/models/user.model";
 import { NextResponse } from "next/server";
 
