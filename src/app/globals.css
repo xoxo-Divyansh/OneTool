@@ -4,8 +4,8 @@
 
 :root {
   --layout: #0b0b0c;
-  --bg: #16181d;
-  --panel: #1f232a;
+  --bg: #020202;
+  --panel: #020202;
   --panel-soft: #252a31;
   --border: #333944;
   --text: #e7e9ee;
@@ -137,34 +137,130 @@ button {
 }
 
 .sidebar-header {
-  padding: 0 8px;
+  margin: 4px 6px 8px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-brand-mark {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading), "Segoe UI", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #f8fafc;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background:
+    linear-gradient(#0f141a, #0f141a) padding-box,
+    linear-gradient(140deg, #22c55e 0%, #16a34a 100%) border-box;
+  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.3);
 }
 
 .logo {
-  font-size: 1.1rem;
+  font-size: 1.04rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+}
+
+.sidebar-brand-subtitle {
+  margin: 2px 0 0;
+  font-size: 0.78rem;
+  color: #94a3b8;
 }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
+  gap: 12px;
+  padding: 0 6px;
+}
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
   gap: 6px;
+}
+
+.sidebar-section-title {
+  margin: 0;
+  font-size: 0.7rem;
+  color: #94a3b8;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0 8px;
+  font-family: var(--font-mono), "Cascadia Code", monospace;
 }
 
 .nav-link {
   color: var(--text);
   text-decoration: none;
-  padding: 10px 12px;
-  border-radius: 10px;
-  font-family: var(--font-heading), "Segoe UI", sans-serif;
-  font-weight: 500;
-  transition: background 0.2s ease, color 0.2s ease;
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .nav-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(34, 197, 94, 0.35);
+  transform: translateY(-1px);
+}
+
+.nav-link.active {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.22), rgba(21, 128, 61, 0.14));
+  border-color: rgba(34, 197, 94, 0.45);
+}
+
+.nav-link-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
   background: rgba(255, 255, 255, 0.06);
-  color: var(--accent);
+  color: #f8fafc;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-family: var(--font-mono), "Cascadia Code", monospace;
+}
+
+.nav-link-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nav-link-title {
+  font-family: var(--font-heading), "Segoe UI", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f8fafc;
+  line-height: 1.2;
+}
+
+.nav-link-subtitle {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .app-header {
@@ -233,14 +329,20 @@ button {
 
 .btn-cta-red,
 .btn-cta-green {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
   border: 1px solid transparent;
   border-radius: 12px;
-  padding: 12px 28px;
+  min-width: 188px;
+  padding: 12px 24px;
   color: #fff;
   font-family: var(--font-heading), "Segoe UI", sans-serif;
   font-weight: 600;
   letter-spacing: 0.01em;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .btn-cta-red {
@@ -257,6 +359,31 @@ button {
 
 .btn-cta-green:hover {
   background: var(--success-hover);
+}
+
+.btn-cta-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid rgba(34, 197, 94, 0.55);
+  border-radius: 12px;
+  min-width: 188px;
+  padding: 12px 24px;
+  background: rgba(22, 26, 33, 0.9);
+  color: #dcfce7;
+  font-family: var(--font-heading), "Segoe UI", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-cta-dark:hover {
+  background: rgba(21, 128, 61, 0.18);
+  border-color: rgba(74, 222, 128, 0.8);
+  color: #f0fdf4;
+  transform: translateY(-1px);
 }
 
 .btn-cta-ghost {
@@ -283,6 +410,12 @@ button {
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.feature-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
 .dashboard-intro,
@@ -332,22 +465,50 @@ button {
   color: inherit;
 }
 
-.tool-card {
+.feature-card {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
   border: 1px solid var(--border);
   border-radius: 18px;
-  padding: 18px;
-  min-height: 140px;
+  padding: 16px;
+  min-height: 190px;
   display: flex;
+  gap: 14px;
   flex-direction: column;
-  margin:10px 0; 
-  justify-content: space-between;
-  transition: transform 0.25s ease, border-color 0.25s ease;
+  justify-content: flex-start;
 }
 
-.tool-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--accent);
+.feature-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #dcfce7;
+  border: 1px solid rgba(74, 222, 128, 0.45);
+  background: linear-gradient(145deg, rgba(34, 197, 94, 0.25), rgba(21, 128, 61, 0.16));
+}
+
+.feature-card-icon svg {
+  display: block;
+}
+
+.feature-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feature-card-title {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #ecfdf5;
+}
+
+.feature-card-desc {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.6;
 }
 
 .tool-icon {

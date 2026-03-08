@@ -1,83 +1,110 @@
-"use client";
+"use client"; 
+// Marks this component as a Client Component in Next.js
 
-import Link from "next/link";
-import { useAuth } from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import Link from "next/link"; // Client-side navigation
+import { useAuth } from "@/hooks/useAuth";  // Custom authentication hook
+import { useState } from "react"; // React state management
+
 
 export default function LoginForm() {
-  const { login } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const router = useRouter();
 
+  // Access login function from auth context
+  const { login } = useAuth();
+
+  // Local UI states
+  const [loading, setLoading] = useState(false); // controls button loading state
+  const [error, setError] = useState(null); // stores login error message
+
+  // Handle form submission
   async function handleSubmit(e) {
-    e.preventDefault();
+    e.preventDefault(); // prevent page reload
+    
     setError(null);
     setLoading(true);
+
+    // Extract form values
     const form = new FormData(e.currentTarget);
 
     try {
+      // Call login function with form data
       await login({
         email: form.get("email"),
         password: form.get("password"),
       });
-      router.replace("/dashboard");
+
+      // Use a full navigation so auth cookies are definitely applied
+      // before hitting protected server routes.
+      window.location.assign("/dashboard");
+
     } catch (err) {
+      // Show error message if login fails
       setError(err.message || "Unable to login");
+
     } finally {
+      // Reset loading state
       setLoading(false);
     }
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="relative space-y-6 rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl"
-    >
-      <div className="flex justify-center">
-        <span className="text-5xl" aria-hidden="true">?????</span>
+    <form onSubmit={handleSubmit} className="auth-card">
+
+      {/* App logo / initials */}
+      <div className="auth-icon-wrap">
+        <span className="auth-icon" aria-hidden="true">
+          OT
+        </span>
       </div>
 
-      <h2 className="text-center text-2xl font-bold text-white tracking-wide">
+      {/* Login heading */}
+      <h2 className="auth-title">
         Welcome back
       </h2>
 
+      {/* Error message display */}
       {error && (
-        <div className="rounded-lg bg-red-500/10 border border-red-500/30 px-3 py-2 text-sm text-red-400">
+        <div className="auth-error">
           {error}
         </div>
       )}
 
+      {/* Email input */}
       <input
         name="email"
         type="email"
         placeholder="Email"
         required
-        className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-purple-500 transition"
+        autoComplete="email"
+        className="auth-input"
       />
 
+      {/* Password input */}
       <input
         name="password"
         type="password"
         placeholder="Password"
         required
-        className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-purple-500 transition"
+        autoComplete="current-password"
+        className="auth-input"
       />
 
+      {/* Submit button with loading state */}
       <button
         disabled={loading}
-        className="relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 py-3 font-semibold text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-50"
+        className="auth-submit-btn"
+        type="submit"
       >
         {loading ? "Logging in..." : "Login"}
       </button>
 
-      <p className="text-center text-sm text-gray-400">
+      {/* Link to registration page */}
+      <p className="auth-switch-text">
         Don&apos;t have an account?{" "}
-        <Link href="/auth/register" className="text-purple-400 hover:underline">
+        <Link href="/auth/register" className="auth-switch-link">
           Register
         </Link>
       </p>
+
     </form>
   );
 }
