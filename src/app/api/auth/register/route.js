@@ -5,59 +5,73 @@ import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  await connectDB();
+  try {
+    await connectDB();
 
-  const { name, email, password } = await req.json();
-  const normalizedName = String(name || "").trim();
-  const normalizedEmail = String(email || "").trim().toLowerCase();
-  const normalizedPassword = String(password || "");
+    let payload;
+    try {
+      payload = await req.json();
+    } catch {
+      return NextResponse.json({ message: "Invalid JSON payload" }, { status: 400 });
+    }
+    const { name, email, password } = payload || {};
+    const normalizedName = String(name || "").trim();
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedPassword = String(password || "");
 
-  if (!normalizedName || !normalizedEmail || !normalizedPassword) {
-    return NextResponse.json({ message: "Missing fields" }, { status: 400 });
-  }
+    if (!normalizedName || !normalizedEmail || !normalizedPassword) {
+      return NextResponse.json({ message: "Missing fields" }, { status: 400 });
+    }
 
-  const existing = await User.findOne({ email: normalizedEmail });
+    const existing = await User.findOne({ email: normalizedEmail });
 
-  if (existing) {
+    if (existing) {
+      return NextResponse.json(
+        { message: "Email already registered" },
+        { status: 409 },
+      );
+    }
+
+    const passwordHash = await bcrypt.hash(normalizedPassword, 12);
+
+    const user = await User.create({
+      name: normalizedName,
+      email: normalizedEmail,
+      passwordHash,
+    });
+
+    const accessToken = signToken({ id: user._id });
+    const refreshToken = signToken({ id: user._id }, "7d");
+
+    const res = NextResponse.json({
+      success: true,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 15,
+    };
+
+    res.cookies.set("accessToken", accessToken, cookieOptions);
+    res.cookies.set("refreshToken", refreshToken, {
+      ...cookieOptions,
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return res;
+  } catch (error) {
+    console.error("[auth/register] Internal server error:", error);
     return NextResponse.json(
-      { message: "Email already registered" },
-      { status: 409 },
+      { success: false, message: "Internal Server Error" },
+      { status: 500 },
     );
   }
-
-  const passwordHash = await bcrypt.hash(normalizedPassword, 12);
-
-  const user = await User.create({
-    name: normalizedName,
-    email: normalizedEmail,
-    passwordHash,
-  });
-
-  const accessToken = signToken({ id: user._id });
-  const refreshToken = signToken({ id: user._id }, "7d");
-
-  const res = NextResponse.json({
-    success: true,
-    user: {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-    },
-  });
-
-  const cookieOptions = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 15,
-  };
-
-  res.cookies.set("accessToken", accessToken, cookieOptions);
-  res.cookies.set("refreshToken", refreshToken, {
-    ...cookieOptions,
-    maxAge: 60 * 60 * 24 * 7,
-  });
-
-  return res;
 }
