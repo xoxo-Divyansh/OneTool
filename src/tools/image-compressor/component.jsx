@@ -38,7 +38,7 @@ function canvasToBlob(canvas, mimeType, quality) {
   });
 }
 
-export default function ImageCompressorPage() {
+export default function ImageCompressorTool() {
   const [file, setFile] = useState(null);
   const [quality, setQuality] = useState(75);
   const [compressedBlob, setCompressedBlob] = useState(null);

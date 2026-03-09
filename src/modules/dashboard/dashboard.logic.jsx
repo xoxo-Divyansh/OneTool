@@ -1,4 +1,4 @@
-import { toolCategories } from "@/lib/tools/toolRegistry";
+import { toolCategories } from "@/core/tool-system/tool-registry";
 
 /**
  * Dashboard cards are based on tool categories.

@@ -1,6 +1,6 @@
 import ToolLayout from "@/components/tools/ToolLayout";
 
-export default function PdfGeneratorPage() {
+export default function PdfGeneratorTool() {
   return (
     <ToolLayout
       title="PDF Generator"

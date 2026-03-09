@@ -4,7 +4,7 @@
  * We derive this list from the tool registry so adding a new tool or category
  * only requires updating a single source of truth.
  */
-import { toolCategories, tools } from "@/lib/tools/toolRegistry";
+import { toolCategories, tools } from "@/core/tool-system/tool-registry";
 
 const workspaceItems = [
   {

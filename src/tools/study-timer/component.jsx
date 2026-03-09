@@ -1,6 +1,6 @@
 import ToolLayout from "@/components/tools/ToolLayout";
 
-export default function StudyTimerPage() {
+export default function StudyTimerTool() {
   return (
     <ToolLayout
       title="Study Timer"

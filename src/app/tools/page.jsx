@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import ToolCard from "@/components/tools/ToolCard";
-import { toolCategories, tools } from "@/lib/tools/toolRegistry";
+import { toolCategories, tools } from "@/core/tool-system/tool-registry";
 
 export default function ToolsDashboardPage() {
   const [query, setQuery] = useState("");
