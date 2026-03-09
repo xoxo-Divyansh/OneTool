@@ -1,4 +1,5 @@
 import ApiTesterToolPage from "@/tools/api-tester/page";
+import { run } from "@/tools/api-tester/run";
 
 const apiTesterToolConfig = {
   id: "api-tester",
@@ -8,7 +9,7 @@ const apiTesterToolConfig = {
   icon: "AP",
   comingSoon: false,
   component: ApiTesterToolPage,
+  run,
 };
 
 export default apiTesterToolConfig;
-

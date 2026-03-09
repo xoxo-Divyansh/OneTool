@@ -1,18 +1,14 @@
-import { getToolById } from "@/core/tool-system/tool-registry";
+import { getToolRunner } from "@/core/tool-system/tool-runner-registry";
 
-export async function executeTool(toolId, input, options = {}) {
-  const tool = getToolById(toolId);
+async function executeToolLocally(toolId, input, options = {}) {
+  const run = getToolRunner(toolId);
 
-  if (!tool) {
+  if (!run) {
     return { ok: false, error: `Tool not found: ${toolId}` };
   }
 
-  if (typeof tool.run !== "function") {
-    return { ok: false, error: `Tool does not implement run(): ${toolId}` };
-  }
-
   try {
-    const result = await tool.run(input, options);
+    const result = await run(input, options);
 
     if (result && typeof result === "object" && "ok" in result) {
       return result;
@@ -27,3 +23,37 @@ export async function executeTool(toolId, input, options = {}) {
   }
 }
 
+async function executeToolViaApi(toolId, input, options = {}) {
+  try {
+    const response = await fetch(`/api/tools/${encodeURIComponent(toolId)}/execute`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ input, options }),
+    });
+    const payload = await response.json();
+
+    if (!response.ok) {
+      return {
+        ok: false,
+        error: payload?.result?.error || payload?.message || "Tool API request failed",
+        status: response.status,
+      };
+    }
+
+    return payload?.result ?? { ok: false, error: "Invalid tool API response" };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Tool API request failed",
+    };
+  }
+}
+
+export async function executeTool(toolId, input, options = {}) {
+  if (typeof window !== "undefined") {
+    return executeToolViaApi(toolId, input, options);
+  }
+
+  return executeToolLocally(toolId, input, options);
+}

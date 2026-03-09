@@ -1,3 +1,5 @@
+import { executeTool } from "@/core/tool-system/tool-engine";
+
 export const apiTesterDefaults = {
   method: "GET",
   url: "https://jsonplaceholder.typicode.com/todos/1",
@@ -9,7 +11,6 @@ export const apiTesterDefaults = {
 };
 
 export const HTTP_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"];
-const API_TESTER_RUN_ENDPOINT = "/api/tools/api-tester/run";
 const API_TESTER_HISTORY_ENDPOINT = "/api/tools/api-tester/history";
 
 export function createHeaderRow() {
@@ -138,32 +139,26 @@ export async function runApiRequest({ method, url, headers, body }) {
   }
 
   try {
-    const response = await fetch(API_TESTER_RUN_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
+    const result = await executeTool("api-tester", {
         method,
         url,
         headers,
         body: requestBody.body ?? "",
-      }),
-    });
+      });
 
-    const payload = await parseJsonResponse(response);
-    if (!response.ok) {
+    if (!result.ok) {
       return {
         ok: false,
-        error: extractErrorMessage(response, payload, "Request failed"),
-        status: response.status,
+        error: result.error || "Request failed",
+        status: result.status,
       };
     }
 
     return {
       ok: true,
-      response: payload?.response,
-      historyEntry: payload?.historyEntry ?? null,
-      quota: payload?.quota ?? null,
+      response: result.response,
+      historyEntry: result.historyEntry ?? null,
+      quota: result.quota ?? null,
     };
   } catch (error) {
     return {
