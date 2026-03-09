@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-     "dev": "next dev --turbopack -p 3000",
+    "dev": "next dev --turbopack -H localhost -p 3000",
     "build": "next build",
-    "start": "next start -p 3000"
+    "start": "next start -p 3000",
+    "test": "jest",
+    "workflow:status": "node scripts/gitStatus.js && node scripts/updateWorkflowStatus.js",
+    "workflow:commit": "node scripts/commitHelper.js",
+    "workflow:pr": "node scripts/prHelper.js",
+    "workflow:all": "npm run workflow:status && npm run workflow:commit && npm run workflow:pr"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",

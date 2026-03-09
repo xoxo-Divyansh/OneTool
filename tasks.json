@@ -1,0 +1,33 @@
+{
+  "//": "Root copy of VS Code tasks for portability. Primary task file is .vscode/tasks.json.",
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Tests",
+      "type": "shell",
+      "command": "npm run test --if-present",
+      "problemMatcher": []
+    },
+    {
+      "label": "Update Workflow Status",
+      "type": "shell",
+      "command": "node scripts/updateWorkflowStatus.js",
+      "problemMatcher": []
+    },
+    {
+      "label": "Create Feature Branch",
+      "type": "shell",
+      "command": "git checkout -b feature/${input:featureName}",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "featureName",
+      "type": "promptString",
+      "description": "Feature branch suffix (example: auth-login)",
+      "default": "new-feature"
+    }
+  ]
+}
+
