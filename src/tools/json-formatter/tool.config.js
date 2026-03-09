@@ -1,4 +1,5 @@
 import JsonFormatterToolPage from "@/tools/json-formatter/page";
+import { run } from "@/tools/json-formatter/run";
 
 const jsonFormatterToolConfig = {
   id: "json-formatter",
@@ -8,7 +9,7 @@ const jsonFormatterToolConfig = {
   icon: "JS",
   comingSoon: false,
   component: JsonFormatterToolPage,
+  run,
 };
 
 export default jsonFormatterToolConfig;
-

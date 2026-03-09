@@ -2,11 +2,10 @@
 
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
+import { executeTool } from "@/core/tool-system/tool-engine";
 import JsonTree from "@/modules/tools/jsonFormatter/tree/JsonTree";
 import {
   getOffsetFromLineColumn,
-  minifyJson,
-  prettifyJson,
   parseJson as parseInputJson,
 } from "@/modules/tools/jsonFormatter/json.logic";
 import {
@@ -95,30 +94,37 @@ export default function JsonFormatterUI({ defaults }) {
     return result.data;
   }
 
-  function onFormat() {
-    const data = parseInputForTooling();
-    if (!data) return;
+  async function runJsonFormatter(mode) {
+    const result = await executeTool("json-formatter", input, { mode });
 
-    setOutput(prettifyJson(data));
-    setStatus("Formatted");
+    if (!result.ok) {
+      setStatus("Invalid JSON");
+      setParsedData(null);
+      applyErrorState(result);
+      return;
+    }
+
+    clearErrorState();
+    setParsedData(result.data);
+
+    if (mode !== "validate") {
+      setOutput(result.output ?? "");
+    }
+
+    setStatus(mode === "format" ? "Formatted" : mode === "minify" ? "Minified" : "Valid JSON");
     clearPathState();
+  }
+
+  function onFormat() {
+    runJsonFormatter("format");
   }
 
   function onMinify() {
-    const data = parseInputForTooling();
-    if (!data) return;
-
-    setOutput(minifyJson(data));
-    setStatus("Minified");
-    clearPathState();
+    runJsonFormatter("minify");
   }
 
   function onValidate() {
-    const data = parseInputForTooling();
-    if (!data) return;
-
-    setStatus("Valid JSON");
-    clearPathState();
+    runJsonFormatter("validate");
   }
 
   async function onCopyOutput() {

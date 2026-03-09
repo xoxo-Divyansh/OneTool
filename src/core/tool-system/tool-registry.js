@@ -63,3 +63,6 @@ export function getToolByRoute(categoryId, toolId) {
   return tools.find((tool) => tool.category === categoryId && tool.id === toolId);
 }
 
+export function getToolById(toolId) {
+  return tools.find((tool) => tool.id === toolId);
+}

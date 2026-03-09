@@ -7,6 +7,7 @@
  * @property {string} [icon]
  * @property {boolean} [comingSoon]
  * @property {import("react").ComponentType<any>} component
+ * @property {(input: unknown, options?: Record<string, unknown>) => unknown | Promise<unknown>} [run]
  */
 
 /**
@@ -17,4 +18,3 @@
  * @property {string} path
  * @property {string} icon
  */
-
