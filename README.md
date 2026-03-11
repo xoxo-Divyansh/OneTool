@@ -49,6 +49,9 @@ Browser UI (App Router pages)
 
 This split is the main separation-of-concerns strategy in this codebase.
 
+### Tool system architecture
+See `docs/tool-system.md` for tool registry contracts, execution flow, and boundaries.
+
 ## 4. Separation of Concerns (Detailed)
 
 ### Routing vs feature logic
