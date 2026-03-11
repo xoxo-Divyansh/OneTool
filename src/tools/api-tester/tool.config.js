@@ -1,13 +1,17 @@
 import ApiTesterToolPage from "@/tools/api-tester/page";
 import { run } from "@/tools/api-tester/run";
 
-const apiTesterToolConfig = {
+export const metadata = {
   id: "api-tester",
   name: "API Tester",
   category: "developer",
   description: "Send API requests and inspect response body and headers.",
   icon: "AP",
   comingSoon: false,
+};
+
+const apiTesterToolConfig = {
+  ...metadata,
   component: ApiTesterToolPage,
   run,
 };
