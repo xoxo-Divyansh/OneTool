@@ -38,10 +38,10 @@ export default function ToolCard({ icon, title, desc, path = "#" }) {
   return (
     <Link
       href={path}
-      className="tool-card-link group relative block rounded-[18px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0b0c]"
+      className="tool-card-link group relative block h-full rounded-[18px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0b0c]"
     >
       <article
-        className="feature-card relative overflow-hidden border border-slate-700/80 bg-gradient-to-br from-slate-900/80 to-[#12151b] p-4 transition-all duration-300 ease-out will-change-transform group-hover:-translate-y-1 group-hover:border-emerald-400/70 group-hover:shadow-[0_14px_36px_rgba(34,197,94,0.18)] group-active:translate-y-0"
+        className="feature-card relative flex h-full flex-col min-h-[160px] overflow-hidden border border-slate-700/80 bg-gradient-to-br from-slate-900/80 to-[#12151b] p-4 transition-all duration-300 ease-out will-change-transform group-hover:-translate-y-1 group-hover:border-emerald-400/70 group-hover:shadow-[0_14px_36px_rgba(34,197,94,0.18)] group-active:translate-y-0"
         aria-label={title}
       >
         <span
@@ -59,7 +59,7 @@ export default function ToolCard({ icon, title, desc, path = "#" }) {
           {Icon ? <Icon size={20} strokeWidth={2} /> : null}
         </span>
 
-        <div className="feature-card-body relative z-10">
+        <div className="feature-card-body relative z-10 flex-grow">
           <h3 className="feature-card-title transition-colors duration-300 group-hover:text-emerald-100">
             {title}
           </h3>

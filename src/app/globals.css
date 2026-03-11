@@ -98,6 +98,20 @@ button {
 
 }
 
+.cta-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+@media (max-width: 639px) {
+  .cta-group {
+    flex-direction: column;
+  }
+}
+
 .layout-root {
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr);

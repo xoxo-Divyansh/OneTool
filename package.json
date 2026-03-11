@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack -H localhost -p 3000",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 3000",
+    "start": "next start",
     "test": "jest",
     "workflow:status": "node scripts/gitStatus.js && node scripts/updateWorkflowStatus.js",
     "workflow:commit": "node scripts/commitHelper.js",

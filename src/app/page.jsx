@@ -52,7 +52,7 @@ export default function Home() {
     <main className="landing-root relative min-h-screen overflow-hidden text-white">
       <Navbar />
 
-      <div className="hero-glow absolute top-[-200px] left-1/2 -translate-x-1/2 w-[800px] h-[800px] blur-[120px] rounded-full" />
+      <div className="hero-glow pointer-events-none absolute top-[-200px] left-1/2 -translate-x-1/2 w-[800px] h-[800px] blur-[120px] rounded-full" />
 
       <section className="max-w-7xl mx-auto px-6 pb-20 pt-16 text-center sm:pt-20">
         <span className="relative z-20 mb-8 mt-8 inline-flex items-center rounded-xl border-b-3 border-emerald-400/55 bg-[#0f1d18] px-9 py-4 text-xs font-semibold uppercase leading-none tracking-[0.4em] text-emerald-200 shadow-[0_6px_20px_rgba(0,0,0,0.35)]">
@@ -70,9 +70,9 @@ export default function Home() {
           OneTool keeps your workflow fast, clean, and focused.
         </p>
 
-        <div className="cta-group">
+        <div className="cta-group relative z-20 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Link
-            href="/tools"
+            href="/dashboard"
             className="btn-cta-green transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(34,197,94,0.35)] active:translate-y-0"
           >
             Start Using Tools
