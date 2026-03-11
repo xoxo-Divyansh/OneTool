@@ -5,11 +5,20 @@ import pdfGenerator from "@/tools/pdf-generator/tool.config";
 import studyTimer from "@/tools/study-timer/tool.config";
 
 /**
- * Transitional loader.
+ * Phase 0 (baseline): transitional loader.
  * Tools self-declare in their own folder via tool.config files.
  * This list can be replaced with filesystem auto-discovery later.
+ * TODO(phase-2): Replace manual imports with registry-driven discovery.
  */
 export function loadToolConfigs() {
   return [apiTester, imageCompressor, jsonFormatter, pdfGenerator, studyTimer];
 }
 
+/**
+ * Phase 1: registry-first loading.
+ * This keeps backward compatibility by reusing the same tool config list.
+ */
+export function registerToolConfigs(registerTools) {
+  const tools = loadToolConfigs();
+  registerTools(tools);
+}

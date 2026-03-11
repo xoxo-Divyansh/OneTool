@@ -1,5 +1,9 @@
 import { getToolRunner } from "@/core/tool-system/tool-runner-registry";
 
+/**
+ * Phase 0 (baseline): execution path is intentionally thin.
+ * TODO(phase-2): Add shared validation, tracing, and error taxonomy for executions.
+ */
 async function executeToolLocally(toolId, input, options = {}) {
   const run = getToolRunner(toolId);
 

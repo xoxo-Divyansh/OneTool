@@ -1,4 +1,5 @@
-import { loadToolConfigs } from "@/core/tool-system/tool-loader";
+import { registerToolConfigs } from "@/core/tool-system/tool-loader";
+import { createToolRegistry } from "@/core/tool-system/tool-registry-store";
 
 const categoryMeta = {
   general: {
@@ -39,9 +40,14 @@ function buildCategoryConfig(categoryId) {
   };
 }
 
-const loadedTools = loadToolConfigs();
+const registry = createToolRegistry();
+registerToolConfigs((tools) => registry.registerTools(tools));
 
-export const tools = loadedTools.map((tool) => ({
+/**
+ * Phase 0 (baseline): registry composes metadata for routing + UI.
+ * TODO(phase-1): Validate tool configs against ToolMetadata contract at load time.
+ */
+export const tools = registry.getTools().map((tool) => ({
   ...tool,
   slug: tool.id,
   path: `/tools/${tool.category}/${tool.id}`,
@@ -66,3 +72,5 @@ export function getToolByRoute(categoryId, toolId) {
 export function getToolById(toolId) {
   return tools.find((tool) => tool.id === toolId);
 }
+
+// TODO(phase-3): Enforce registry as the single source of truth for tool discovery.
