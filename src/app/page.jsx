@@ -1,6 +1,6 @@
 import Navbar from "@/components/common/Navbar";
 import Link from "next/link";
-import ToolCard from "@/components/ToolCard";
+import ToolCard from "@/components/dashboard/ToolCard";
 
 const popularTools = [
   {

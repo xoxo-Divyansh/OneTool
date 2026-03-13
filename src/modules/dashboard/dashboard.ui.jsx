@@ -1,4 +1,4 @@
-import ToolCard from "@/components/ToolCard";
+import ToolCard from "@/components/dashboard/ToolCard";
 
 export default function DashboardUI({ tools }) {
   return (
