@@ -4,6 +4,8 @@
 import Link from "next/link"; // Client-side navigation
 import { useAuth } from "@/hooks/useAuth";  // Custom authentication hook
 import { useState } from "react"; // React state management
+import { InlineSpinner } from "@/components/UI/LoadingSpinner";
+import ErrorAlert from "@/components/UI/ErrorAlert";
 
 
 export default function LoginForm() {
@@ -63,9 +65,11 @@ export default function LoginForm() {
 
       {/* Error message display */}
       {error && (
-        <div className="auth-error">
-          {error}
-        </div>
+        <ErrorAlert
+          type="error"
+          message={error}
+          onDismiss={() => setError(null)}
+        />
       )}
 
       {/* Email input */}
@@ -91,9 +95,10 @@ export default function LoginForm() {
       {/* Submit button with loading state */}
       <button
         disabled={loading}
-        className="auth-submit-btn"
+        className="auth-submit-btn flex items-center justify-center gap-2"
         type="submit"
       >
+        {loading && <InlineSpinner />}
         {loading ? "Logging in..." : "Login"}
       </button>
 

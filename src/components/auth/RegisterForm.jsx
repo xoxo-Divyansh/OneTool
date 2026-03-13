@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { InlineSpinner } from "@/components/UI/LoadingSpinner";
+import ErrorAlert from "@/components/UI/ErrorAlert";
 
 export default function RegisterForm() {
   const { register } = useAuth();
@@ -44,9 +46,11 @@ export default function RegisterForm() {
       </h2>
 
       {error && (
-        <div className="auth-error">
-          {error}
-        </div>
+        <ErrorAlert
+          type="error"
+          message={error}
+          onDismiss={() => setError("")}
+        />
       )}
 
       <input
@@ -77,8 +81,9 @@ export default function RegisterForm() {
 
       <button
         disabled={loading}
-        className="auth-submit-btn"
+        className="auth-submit-btn flex items-center justify-center gap-2"
       >
+        {loading && <InlineSpinner />}
         {loading ? "Creating..." : "Register"}
       </button>
 
