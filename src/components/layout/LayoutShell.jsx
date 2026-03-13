@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Menu } from "lucide-react";
 import Sidebar from "@/components/layout/Sidebar";
-import Header from "@/components/layout/Header";
 
 export default function LayoutShell({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -17,11 +17,23 @@ export default function LayoutShell({ children }) {
 
   return (
     <div className="layout-root">
+      {/* Sidebar - Always visible on desktop, toggle on mobile */}
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+      
       <div className="layout-main">
-        <Header onMenuClick={toggleSidebar} />
+        {/* Mobile menu button */}
+        <button 
+          className="mobile-menu-btn"
+          onClick={toggleSidebar}
+          aria-label="Toggle menu"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+
         <main className="layout-content">{children}</main>
       </div>
+
+      {/* Overlay for mobile */}
       <button
         type="button"
         aria-label="Close sidebar"
