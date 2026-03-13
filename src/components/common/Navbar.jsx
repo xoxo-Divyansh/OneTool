@@ -2,110 +2,121 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Search, Menu, X } from "lucide-react";
+import ToolSearch from "@/components/common/ToolSearch";
 
 export default function Navbar() {
   const { user, loading } = useAuth();
-  const ctaHref = user ? "/dashboard" : "/auth/register";
-  const ctaLabel = user ? "Open Dashboard" : "Get Started";
   const pathname = usePathname();
-  const isTools = pathname.startsWith("/tools");
-  const isDashboard = pathname.startsWith("/dashboard");
-  const [isFeaturesInView, setIsFeaturesInView] = useState(false);
-  const isFeaturesActive = pathname === "/" && isFeaturesInView;
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    if (pathname !== "/") return;
-
-    const section = document.getElementById("features");
-    if (!section) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsFeaturesInView(entry.isIntersecting);
-      },
-      {
-        root: null,
-        rootMargin: "-10% 0px -65% 0px",
-        threshold: 0.1,
-      }
-    );
-
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, [pathname]);
+  // Don't show CTA if already on dashboard
+  const showCTA = !pathname.startsWith("/dashboard");
+  const ctaHref = user ? "/dashboard" : "/auth/register";
+  const ctaLabel = user ? "Dashboard" : "Get Started";
 
   return (
-    <nav className="w-full border-b border-white/10 bg-black/60 backdrop-blur">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold accent-text">
-          OneTool<span className="text-white">.</span>
-        </Link>
+    <>
+      {/* Minimal Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-10 border-b border-white/5 bg-black/40 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-16">
+            {/* Left Side: Search + Menu */}
+            <div className="flex items-center gap-3">
+              {/* Desktop: Search Trigger */}
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-all text-sm group"
+              >
+                <Search className="w-4 h-4 text-white/50 group-hover:text-white/70" />
+                <span className="text-white/50 group-hover:text-white/70">Search tools...</span>
+                <kbd className="ml-2 px-2 py-0.5 text-xs text-white/40 border border-white/10 rounded bg-white/5">
+                  ⌘K
+                </kbd>
+              </button>
 
-        <div className="hidden md:flex gap-6 text-sm text-white/80 ">
-          <div className="relative group">
-            <Link
-              href="/tools"
-              className={`hover:text-white transition-colors ${
-                isTools ? "text-white font-medium" : "text-white/80"
-              }`}
-            >
-              Tools
-            </Link>
-            <div className="pointer-events-none absolute left-0 top-full z-30 mt-3 w-56 translate-y-2 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100">
-              <div className="rounded-xl border border-white/10 bg-black/90 p-3 shadow-[0_12px_32px_rgba(0,0,0,0.45)] backdrop-blur">
-                <Link
-                  href="/tools/general"
-                  className="block rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:text-white hover:bg-white/5"
+              {/* Mobile: Search + Menu Buttons */}
+              <div className="flex md:hidden items-center gap-2">
+                <button
+                  onClick={() => setIsSearchOpen(true)}
+                  className="p-2 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+                  aria-label="Search"
                 >
-                  General Tools
-                </Link>
-                <Link
-                  href="/tools/developer"
-                  className="block rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:text-white hover:bg-white/5"
+                  <Search className="w-5 h-5 text-white/60" />
+                </button>
+
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="p-2 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+                  aria-label="Menu"
                 >
-                  Developer Tools
-                </Link>
-                <Link
-                  href="/tools/student"
-                  className="block rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:text-white hover:bg-white/5"
-                >
-                  Student Tools
-                </Link>
-                <Link
-                  href="/tools"
-                  className="mt-2 block rounded-lg px-3 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-emerald-300/90 transition-colors hover:text-emerald-200 hover:bg-emerald-500/10"
-                >
-                  View All Tools
-                </Link>
+                  {isMobileMenuOpen ? (
+                    <X className="w-5 h-5 text-white/60" />
+                  ) : (
+                    <Menu className="w-5 h-5 text-white/60" />
+                  )}
+                </button>
               </div>
             </div>
-          </div>
-          <Link
-            href="/#features"
-            className={`hover:text-white transition-colors ${
-              isFeaturesActive ? "text-white font-medium" : "text-white/80"
-            }`}
-          >
-            Features
-          </Link>
-          <Link
-            href="/dashboard"
-            className={`hover:text-white transition-colors ${
-              isDashboard ? "text-white font-medium" : "text-white/80"
-            }`}
-          >
-            Dashboard
-          </Link>
-        </div>
 
-        <Link
-          href={loading ? "#" : ctaHref}
-          className={`btn-cta-ghost text-sm ${loading ? "opacity-60 pointer-events-none" : ""}`}
-        >
-          {loading ? "Loading..." : ctaLabel}
-        </Link>
-      </div>
-    </nav>
+            {/* Right Side: Logo + CTA */}
+            <div className="flex items-center gap-3">
+              <Link href="/" className="text-lg font-bold accent-text flex-shrink-0">
+                OneTool<span className="text-white">.</span>
+              </Link>
+
+              {/* Desktop: CTA */}
+              {showCTA && (
+                <Link
+                  href={loading ? "#" : ctaHref}
+                  className={`hidden md:inline-flex px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium transition-colors ${loading ? "opacity-60 pointer-events-none" : ""}`}
+                >
+                  {loading ? "Loading..." : ctaLabel}
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden py-4 border-t border-white/10">
+              <div className="flex flex-col gap-2">
+                <Link
+                  href="/tools"
+                  className="px-4 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Tools
+                </Link>
+                <Link
+                  href="/dashboard"
+                  className="px-4 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+                {showCTA && (
+                  <Link
+                    href={ctaHref}
+                    className="mt-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium text-center transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {ctaLabel}
+                  </Link>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* Spacer to prevent content from going under navbar */}
+      <div className="h-16" />
+
+      {/* Global Tool Search Modal */}
+      <ToolSearch isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+    </>
   );
 }
