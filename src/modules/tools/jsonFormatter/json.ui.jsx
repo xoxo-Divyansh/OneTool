@@ -12,6 +12,7 @@ import {
   extractByJsonPath,
   printJson,
 } from "@/modules/tools/jsonFormatter/tree/tree.utils";
+import ErrorAlert from "@/components/UI/ErrorAlert";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -258,19 +259,17 @@ export default function JsonFormatterUI({ defaults }) {
         </button>
       </div>
 
-      {errorInfo ? (
-        <p className="tool-error">
-          {errorInfo.error}
-          {errorInfo.line && errorInfo.column
-            ? ` (line ${errorInfo.line}, col ${errorInfo.column})`
-            : ""}
-          {errorInfo.line && errorInfo.column ? (
-            <button type="button" className="tool-error-jump" onClick={onJumpToError}>
-              Jump to error
-            </button>
-          ) : null}
-        </p>
-      ) : null}
+      {errorInfo && (
+        <ErrorAlert
+          type="error"
+          message={`${errorInfo.error}${errorInfo.line && errorInfo.column ? ` (line ${errorInfo.line}, col ${errorInfo.column})` : ""}`}
+          onDismiss={clearErrorState}
+          action={errorInfo.line && errorInfo.column ? {
+            label: `Jump to line ${errorInfo.line}`,
+            onClick: onJumpToError
+          } : undefined}
+        />
+      )}
 
       <div className="tool-grid">
         <div className="tool-block">
@@ -353,7 +352,13 @@ export default function JsonFormatterUI({ defaults }) {
               </button>
             </div>
 
-            {pathError ? <p className="tool-error">{pathError}</p> : null}
+            {pathError && (
+              <ErrorAlert
+                type="error"
+                message={pathError}
+                onDismiss={clearPathState}
+              />
+            )}
 
             <div className="json-path-result">
               <span>Result</span>

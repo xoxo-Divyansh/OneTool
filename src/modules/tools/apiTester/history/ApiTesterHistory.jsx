@@ -1,5 +1,8 @@
 "use client";
 
+import LoadingSpinner, { InlineSpinner } from "@/components/UI/LoadingSpinner";
+import ErrorAlert from "@/components/UI/ErrorAlert";
+
 function formatTimestamp(value) {
   if (!value) return "-";
   const date = new Date(value);
@@ -12,14 +15,27 @@ export default function ApiTesterHistory({ entries, isLoading, error, onRefresh,
     <section className="api-history-panel">
       <div className="api-history-head">
         <h3>Recent Runs</h3>
-        <button type="button" className="cmd-btn" onClick={onRefresh} disabled={isLoading}>
+        <button type="button" className="cmd-btn flex items-center gap-2" onClick={onRefresh} disabled={isLoading}>
+          {isLoading && <InlineSpinner />}
           {isLoading ? "Refreshing..." : "Refresh"}
         </button>
       </div>
 
-      {error ? <p className="tool-error">{error}</p> : null}
+      {error && (
+        <ErrorAlert
+          type="error"
+          message={error}
+          onDismiss={() => {}}
+          action={{
+            label: "Retry",
+            onClick: onRefresh
+          }}
+        />
+      )}
 
-      {entries.length === 0 ? (
+      {isLoading && entries.length === 0 ? (
+        <LoadingSpinner size="md" message="Loading history..." />
+      ) : entries.length === 0 ? (
         <p className="api-history-empty">No runs yet. Send a request to start building history.</p>
       ) : (
         <div className="api-history-table-wrap">

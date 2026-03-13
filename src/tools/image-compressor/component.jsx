@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import ToolLayout from "@/components/tools/ToolLayout";
+import { InlineSpinner } from "@/components/UI/LoadingSpinner";
+import ErrorAlert from "@/components/UI/ErrorAlert";
 
 function readImage(file) {
   return new Promise((resolve, reject) => {
@@ -135,7 +137,13 @@ export default function ImageCompressorTool() {
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3">
-          <button type="button" onClick={handleCompress} className="btn-cta-green" disabled={isProcessing}>
+          <button 
+            type="button" 
+            onClick={handleCompress} 
+            className="btn-cta-green flex items-center gap-2" 
+            disabled={isProcessing}
+          >
+            {isProcessing && <InlineSpinner />}
             {isProcessing ? "Compressing..." : "Compress image"}
           </button>
           {compressedUrl ? (
@@ -145,11 +153,17 @@ export default function ImageCompressorTool() {
           ) : null}
         </div>
 
-        {error ? (
-          <p className="tool-error mt-4">
-            <span>{error}</span>
-          </p>
-        ) : null}
+        {error && (
+          <ErrorAlert
+            type="error"
+            message={error}
+            onDismiss={() => setError("")}
+            action={{
+              label: "Try Again",
+              onClick: handleCompress
+            }}
+          />
+        )}
       </div>
 
       <div className="tool-grid">

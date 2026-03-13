@@ -10,6 +10,8 @@ import {
   runApiRequest,
 } from "@/modules/tools/apiTester/apiTester.logic";
 import ApiTesterHistory from "@/modules/tools/apiTester/history/ApiTesterHistory";
+import { InlineSpinner } from "@/components/UI/LoadingSpinner";
+import ErrorAlert from "@/components/UI/ErrorAlert";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -182,7 +184,8 @@ export default function ApiTesterUI({ defaults }) {
       </header>
 
       <div className="tool-actions">
-        <button type="button" className="btn-cta-green" onClick={onSend} disabled={isSending}>
+        <button type="button" className="btn-cta-green flex items-center gap-2" onClick={onSend} disabled={isSending}>
+          {isSending && <InlineSpinner />}
           {isSending ? "Sending..." : "Send"}
         </button>
         <button type="button" className="cmd-btn" onClick={onLoadSample}>
@@ -193,12 +196,23 @@ export default function ApiTesterUI({ defaults }) {
         </button>
       </div>
 
-      {requestError ? <p className="tool-error">{requestError}</p> : null}
-      {quotaInfo ? (
-        <p className="api-quota-note">
-          Remaining requests in current 24h window: {quotaInfo.remaining} / {quotaInfo.limit}
-        </p>
-      ) : null}
+      {requestError && (
+        <ErrorAlert
+          type="error"
+          message={requestError}
+          onDismiss={() => setRequestError("")}
+          action={{
+            label: "Retry",
+            onClick: onSend
+          }}
+        />
+      )}
+      {quotaInfo && (
+        <ErrorAlert
+          type={quotaInfo.remaining < 10 ? "warning" : "info"}
+          message={`Remaining requests in current 24h window: ${quotaInfo.remaining} / ${quotaInfo.limit}`}
+        />
+      )}
 
       <div className="api-grid">
         <section className="api-panel">
