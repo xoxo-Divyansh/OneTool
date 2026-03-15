@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
+import styles from "./search.module.css";
 
 function normalize(value) {
   return String(value || "").toLowerCase().trim();
@@ -41,25 +42,25 @@ export default function SearchLanding({ tools, categories, featuredTools }) {
   const showResults = normalizedQuery.length > 0 || activeCategory !== "all";
 
   return (
-    <main className="search-root">
-      <header className="search-header">
-        <Link href="/" className="search-brand">
+    <main className={styles.searchRoot}>
+      <header className={styles.searchHeader}>
+        <Link href="/" className={styles.searchBrand}>
           OneTool
-          <span className="search-brand-dot">.</span>
+          <span className={styles.searchBrandDot}>.</span>
         </Link>
-        <nav className="search-actions">
-          <Link href="/auth/login" className="search-link">
+        <nav className={styles.searchActions}>
+          <Link href="/auth/login" className={styles.searchLink}>
             Sign in
           </Link>
-          <Link href="/dashboard" className="search-cta">
+          <Link href="/dashboard" className={styles.searchCta}>
             Open workspace
           </Link>
         </nav>
       </header>
 
-      <section className="search-hero">
-        <div className="search-hero-copy">
-          <p className="search-kicker">Search-first workspace</p>
+      <section className={styles.searchHero}>
+        <div className={styles.searchHeroCopy}>
+          <p className={styles.searchKicker}>Search-first workspace</p>
           <h1>Find the tool you need in seconds.</h1>
           <p>
             Type a task, open the tool, and keep your work inside a focused
@@ -67,24 +68,24 @@ export default function SearchLanding({ tools, categories, featuredTools }) {
           </p>
         </div>
 
-        <div className="search-panel">
-          <div className="search-input-wrap">
-            <Search className="search-icon" />
+        <div className={styles.searchPanel}>
+          <div className={styles.searchInputWrap}>
+            <Search className={styles.searchIcon} />
             <input
               type="text"
               placeholder="Search tools like JSON formatter, API tester..."
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              className="search-input"
+              className={styles.searchInput}
               autoFocus
             />
-            <span className="search-kbd">Ctrl+K</span>
+            <span className={styles.searchKbd}>Ctrl+K</span>
           </div>
 
-          <div className="search-chips">
+          <div className={styles.searchChips}>
             <button
               type="button"
-              className={`search-chip ${activeCategory === "all" ? "active" : ""}`}
+              className={`${styles.searchChip} ${activeCategory === "all" ? styles.searchChipActive : ""}`}
               onClick={() => setActiveCategory("all")}
             >
               All tools
@@ -93,7 +94,7 @@ export default function SearchLanding({ tools, categories, featuredTools }) {
               <button
                 key={category.id}
                 type="button"
-                className={`search-chip ${activeCategory === category.id ? "active" : ""}`}
+                className={`${styles.searchChip} ${activeCategory === category.id ? styles.searchChipActive : ""}`}
                 onClick={() => setActiveCategory(category.id)}
               >
                 {category.label}
@@ -102,9 +103,9 @@ export default function SearchLanding({ tools, categories, featuredTools }) {
           </div>
 
           {showResults && (
-            <div className="search-results">
+            <div className={styles.searchResults}>
               {filteredTools.length === 0 ? (
-                <div className="search-empty">
+                <div className={styles.searchEmpty}>
                   <p>No tools match that search yet.</p>
                   <span>Try a different keyword or category.</span>
                 </div>
@@ -113,19 +114,19 @@ export default function SearchLanding({ tools, categories, featuredTools }) {
                   <Link
                     key={tool.id}
                     href={tool.path}
-                    className="search-result-card"
+                    className={styles.searchResultCard}
                   >
-                    <div className="search-result-icon">{tool.icon}</div>
-                    <div className="search-result-meta">
-                      <div className="search-result-title">
+                    <div className={styles.searchResultIcon}>{tool.icon}</div>
+                    <div className={styles.searchResultMeta}>
+                      <div className={styles.searchResultTitle}>
                         <span>{tool.name}</span>
                         {tool.requiresAuth && (
-                          <span className="search-tag">Workspace</span>
+                          <span className={styles.searchTag}>Workspace</span>
                         )}
                       </div>
                       <p>{tool.description}</p>
                     </div>
-                    <span className="search-result-arrow">Open</span>
+                    <span className={styles.searchResultArrow}>Open</span>
                   </Link>
                 ))
               )}
@@ -134,15 +135,15 @@ export default function SearchLanding({ tools, categories, featuredTools }) {
         </div>
       </section>
 
-      <section className="search-featured">
-        <div className="search-section-header">
+      <section className={styles.searchFeatured}>
+        <div className={styles.searchSectionHeader}>
           <h2>Featured tools</h2>
           <p>Quick access to the most used utilities.</p>
         </div>
-        <div className="search-featured-grid">
+        <div className={styles.searchFeaturedGrid}>
           {featuredTools.map((tool) => (
-            <Link key={tool.id} href={tool.path} className="search-featured-card">
-              <div className="search-featured-icon">{tool.icon}</div>
+            <Link key={tool.id} href={tool.path} className={styles.searchFeaturedCard}>
+              <div className={styles.searchFeaturedIcon}>{tool.icon}</div>
               <div>
                 <h3>{tool.name}</h3>
                 <p>{tool.description}</p>
