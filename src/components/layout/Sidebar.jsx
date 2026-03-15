@@ -51,7 +51,7 @@ export default function Sidebar({ isOpen, onClose }) {
           >
             <Search className="w-4 h-4" />
             <span>Search tools...</span>
-            <kbd className="sidebar-search-kbd">⌘K</kbd>
+            <kbd className="sidebar-search-kbd">Cmd+K</kbd>
           </button>
         </div>
 
@@ -61,8 +61,9 @@ export default function Sidebar({ isOpen, onClose }) {
             <div key={sectionName} className="sidebar-section">
               <p className="sidebar-section-title">{sectionName}</p>
               {items.map((item) => {
+                const basePath = item.path.split("?")[0];
                 const isActive =
-                  pathname === item.path || pathname.startsWith(`${item.path}/`);
+                  pathname === basePath || pathname.startsWith(`${basePath}/`);
 
                 return (
                   <Link

@@ -35,7 +35,7 @@ function buildCategoryConfig(categoryId) {
     id: categoryId,
     label: meta.label,
     description: meta.description,
-    path: `/tools/${categoryId}`,
+    path: `/dashboard/tools?category=${categoryId}`,
     icon: meta.icon,
   };
 }
@@ -50,7 +50,8 @@ registerToolConfigs((tools) => registry.registerTools(tools));
 export const tools = registry.getTools().map((tool) => ({
   ...tool,
   slug: tool.id,
-  path: `/tools/${tool.category}/${tool.id}`,
+  path: `/dashboard/tools/${tool.id}`,
+  publicPath: `/tools/${tool.category}/${tool.id}`,
 }));
 
 export const toolCategories = Array.from(new Set(tools.map((tool) => tool.category))).map((categoryId) =>

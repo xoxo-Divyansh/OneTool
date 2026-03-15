@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getToolByRoute } from "@/core/tool-system/tool-registry";
 
 export default async function ToolRuntimePage({ params }) {
@@ -9,7 +9,5 @@ export default async function ToolRuntimePage({ params }) {
     notFound();
   }
 
-  const ToolComponent = tool.component;
-
-  return <ToolComponent />;
+  redirect(tool.path);
 }
