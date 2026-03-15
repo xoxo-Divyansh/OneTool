@@ -1681,28 +1681,61 @@ button {
 }
 
 .theme-light {
-  --layout: #f5f7fa;
-  --bg: #f2f4f7;
+  --layout: #eef1f5;
+  --bg: #f6f7f9;
   --panel: #ffffff;
-  --panel-soft: #eef2f6;
-  --border: #d6dbe3;
-  --text: #0f172a;
-  --text-soft: #4b5563;
+  --panel-soft: #f3f5f8;
+  --border: #cfd6de;
+  --text: #0b1324;
+  --text-soft: #3f4b5c;
   --accent: #0f766e;
   --accent-hover: #0a5f58;
-  --success: #16a34a;
-  --success-hover: #15803d;
-  --search-panel: rgba(255, 255, 255, 0.9);
-  --search-panel-border: rgba(148, 163, 184, 0.35);
-  --search-panel-input: rgba(241, 245, 249, 0.9);
-  --search-card: rgba(255, 255, 255, 0.8);
-  --search-card-border: rgba(148, 163, 184, 0.35);
-  --search-root-bg: radial-gradient(circle at top, rgba(15, 118, 110, 0.15), rgba(242, 244, 247, 0.95) 55%);
+  --success: #15803d;
+  --success-hover: #166534;
+  --search-panel: rgba(255, 255, 255, 0.96);
+  --search-panel-border: rgba(100, 116, 139, 0.35);
+  --search-panel-input: rgba(248, 250, 252, 0.95);
+  --search-card: rgba(255, 255, 255, 0.92);
+  --search-card-border: rgba(100, 116, 139, 0.35);
+  --search-root-bg: radial-gradient(circle at top, rgba(15, 118, 110, 0.12), rgba(246, 247, 249, 0.98) 55%);
 }
 
 .theme-light body {
   background: var(--bg);
   color: var(--text);
+}
+
+.theme-light .dashboard-panel,
+.theme-light .dashboard-intro,
+.theme-light .feature-card,
+.theme-light .api-panel,
+.theme-light .api-history-panel,
+.theme-light .json-helper-panel,
+.theme-light .json-tree-panel,
+.theme-light .json-path-panel,
+.theme-light .tool-status,
+.theme-light .tool-error,
+.theme-light .tool-block > div {
+  background: #ffffff;
+  border-color: rgba(100, 116, 139, 0.25);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.theme-light .nav-link.active {
+  background: rgba(15, 118, 110, 0.12);
+  border-color: rgba(15, 118, 110, 0.35);
+}
+
+.theme-light .feature-card-title,
+.theme-light .nav-link-title,
+.theme-light .logo {
+  color: var(--text);
+}
+
+.theme-light .nav-link-subtitle,
+.theme-light .sidebar-brand-subtitle,
+.theme-light .dashboard-subtitle {
+  color: var(--text-soft);
 }
 
 .theme-toggle {
