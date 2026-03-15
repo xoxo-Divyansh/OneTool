@@ -5,6 +5,8 @@ import {
 import { connectDB } from "@/lib/db/models/connect";
 import ToolHistory from "@/lib/db/models/toolHistory.model";
 import { NextResponse } from "next/server";
+import { promises as dns } from "node:dns";
+import net from "node:net";
 
 const SUPPORTED_METHODS = new Set([
   "GET",
@@ -16,6 +18,103 @@ const SUPPORTED_METHODS = new Set([
   "OPTIONS",
 ]);
 const DEFAULT_DAILY_LIMIT = 100;
+const BLOCKED_HOSTNAMES = new Set([
+  "localhost",
+  "localhost.localdomain",
+]);
+const BLOCKED_HOST_SUFFIXES = [
+  ".local",
+  ".internal",
+  ".localhost",
+];
+
+function isPrivateIpv4(ip) {
+  const parts = ip.split(".").map((part) => Number(part));
+  if (parts.length !== 4 || parts.some((part) => Number.isNaN(part))) {
+    return false;
+  }
+
+  const [a, b] = parts;
+
+  if (a === 10) return true;
+  if (a === 127) return true;
+  if (a === 0) return true;
+  if (a === 169 && b === 254) return true;
+  if (a === 172 && b >= 16 && b <= 31) return true;
+  if (a === 192 && b === 168) return true;
+  if (a === 100 && b >= 64 && b <= 127) return true;
+  if (a === 192 && b === 0) return true;
+  if (a === 198 && (b === 18 || b === 19)) return true;
+  if (a === 203 && b === 0) return true;
+  if (a >= 224) return true;
+
+  return false;
+}
+
+function isPrivateIpv6(ip) {
+  const normalized = ip.toLowerCase();
+
+  if (normalized === "::1" || normalized === "::") return true;
+  if (normalized.startsWith("fe80:")) return true;
+  if (normalized.startsWith("fec0:")) return true;
+  if (normalized.startsWith("fc") || normalized.startsWith("fd")) return true;
+  if (normalized.startsWith("ff")) return true;
+  if (normalized.startsWith("2001:db8:")) return true;
+
+  return false;
+}
+
+function isPrivateIp(ip) {
+  const version = net.isIP(ip);
+  if (version === 4) return isPrivateIpv4(ip);
+  if (version === 6) {
+    if (ip.startsWith("::ffff:")) {
+      const v4 = ip.slice(7);
+      if (net.isIP(v4) === 4) {
+        return isPrivateIpv4(v4);
+      }
+    }
+    return isPrivateIpv6(ip);
+  }
+  return false;
+}
+
+async function resolveAndValidateHost(hostname) {
+  if (!hostname || typeof hostname !== "string") {
+    return { ok: false, error: "Invalid host" };
+  }
+
+  const normalized = hostname.toLowerCase();
+  if (BLOCKED_HOSTNAMES.has(normalized)) {
+    return { ok: false, error: "Blocked host" };
+  }
+  if (BLOCKED_HOST_SUFFIXES.some((suffix) => normalized.endsWith(suffix))) {
+    return { ok: false, error: "Blocked host" };
+  }
+
+  if (net.isIP(hostname)) {
+    return isPrivateIp(hostname)
+      ? { ok: false, error: "Blocked host" }
+      : { ok: true };
+  }
+
+  try {
+    const records = await dns.lookup(hostname, { all: true, verbatim: true });
+    if (!records || records.length === 0) {
+      return { ok: false, error: "Unable to resolve host" };
+    }
+
+    for (const record of records) {
+      if (isPrivateIp(record.address)) {
+        return { ok: false, error: "Blocked host" };
+      }
+    }
+
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Unable to resolve host" };
+  }
+}
 
 function sanitizeHeaders(inputHeaders = {}) {
   const sanitized = {};
@@ -35,7 +134,7 @@ function sanitizeHeaders(inputHeaders = {}) {
   return sanitized;
 }
 
-function validateUrl(rawUrl) {
+async function validateUrl(rawUrl) {
   if (typeof rawUrl !== "string" || rawUrl.trim().length === 0) {
     return { ok: false, error: "URL is required" };
   }
@@ -45,6 +144,11 @@ function validateUrl(rawUrl) {
     if (!["http:", "https:"].includes(parsed.protocol)) {
       return { ok: false, error: "Only HTTP/HTTPS URLs are supported" };
     }
+    const hostCheck = await resolveAndValidateHost(parsed.hostname);
+    if (!hostCheck.ok) {
+      return hostCheck;
+    }
+
     return { ok: true, normalized: parsed.toString() };
   } catch {
     return { ok: false, error: "Invalid URL format" };
@@ -124,7 +228,7 @@ export async function POST(req) {
   }
 
   const method = String(payload?.method || "GET").toUpperCase();
-  const urlValidation = validateUrl(payload?.url);
+  const urlValidation = await validateUrl(payload?.url);
   const headers = sanitizeHeaders(payload?.headers);
   const bodyText = typeof payload?.body === "string" ? payload.body : "";
 
@@ -145,6 +249,7 @@ export async function POST(req) {
   const requestInit = {
     method,
     headers,
+    redirect: "manual",
   };
 
   if (!["GET", "HEAD"].includes(method) && bodyText.trim().length > 0) {

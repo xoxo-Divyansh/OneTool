@@ -4,9 +4,10 @@ export const metadata = {
   id: "study-timer",
   name: "Study Timer",
   category: "student",
-  description: "Track focused study sessions with simple timing.",
-  icon: "TM",
+  description: "Track focus sessions with a clean study timer.",
+  icon: "ST",
   comingSoon: true,
+  requiresAuth: false,
 };
 
 const studyTimerToolConfig = {

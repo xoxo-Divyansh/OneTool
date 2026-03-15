@@ -8,6 +8,7 @@ export const metadata = {
   description: "Send API requests and inspect response body and headers.",
   icon: "AP",
   comingSoon: false,
+  requiresAuth: true,
 };
 
 const apiTesterToolConfig = {

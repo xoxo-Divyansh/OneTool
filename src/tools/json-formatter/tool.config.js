@@ -5,9 +5,10 @@ export const metadata = {
   id: "json-formatter",
   name: "JSON Formatter",
   category: "developer",
-  description: "Paste JSON, beautify it, and copy the result.",
+  description: "Format, minify, and validate JSON instantly.",
   icon: "JS",
   comingSoon: false,
+  requiresAuth: false,
 };
 
 const jsonFormatterToolConfig = {

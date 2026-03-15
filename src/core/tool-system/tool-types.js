@@ -9,6 +9,7 @@
  * @property {string} description
  * @property {string} [icon]
  * @property {boolean} [comingSoon]
+ * @property {boolean} [requiresAuth]
  * @property {string} [version]
  * @property {string[]} [keywords]
  */
@@ -21,6 +22,7 @@
  * @property {string} description
  * @property {string} [icon]
  * @property {boolean} [comingSoon]
+ * @property {boolean} [requiresAuth]
  * @property {ToolMetadata} [metadata]
  * @property {import("react").ComponentType<any>} component
  * @property {(input: unknown, options?: Record<string, unknown>) => unknown | Promise<unknown>} [run]

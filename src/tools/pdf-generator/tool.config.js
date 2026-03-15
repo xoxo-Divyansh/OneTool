@@ -4,9 +4,10 @@ export const metadata = {
   id: "pdf-generator",
   name: "PDF Generator",
   category: "general",
-  description: "Create downloadable PDF files from text.",
+  description: "Generate and download PDF documents from custom inputs.",
   icon: "PD",
   comingSoon: true,
+  requiresAuth: false,
 };
 
 const pdfGeneratorToolConfig = {

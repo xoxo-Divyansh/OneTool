@@ -1,39 +1,31 @@
 import { NextResponse } from "next/server";
+import { jwtVerify } from "jose";
 
-function decodeBase64Url(value) {
-  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
-  const padding = normalized.length % 4;
-  const padded = padding ? normalized + "=".repeat(4 - padding) : normalized;
-  return atob(padded);
+async function getUserIdFromToken(token) {
+  if (!token) return null;
+  const secret = process.env.JWT_SECRET;
+  if (!secret) return null;
+
+  try {
+    const { payload } = await jwtVerify(
+      token,
+      new TextEncoder().encode(secret),
+    );
+    return payload?.id ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function proxy(req) {
   const { pathname } = req.nextUrl;
 
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/auth") ||
-    pathname === "/"
-  ) {
+  if (pathname.startsWith("/dashboard/tools")) {
     return NextResponse.next();
   }
 
   const token = req.cookies.get("accessToken")?.value;
-  let userId = null;
-
-  if (token) {
-    try {
-      const parts = token.split(".");
-      if (parts.length === 3) {
-        const decoded = decodeBase64Url(parts[1]);
-        const payload = JSON.parse(decoded);
-        userId = payload?.id ?? null;
-      }
-    } catch {
-      userId = null;
-    }
-  }
+  const userId = await getUserIdFromToken(token);
 
   if (!userId) {
     const loginUrl = new URL("/auth/login", req.url);
@@ -44,5 +36,5 @@ export async function proxy(req) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/tools/:path*"],
+  matcher: ["/dashboard/:path*"],
 };

@@ -7,6 +7,7 @@ export const metadata = {
   description: "Compress image size using a quality slider and download it.",
   icon: "IM",
   comingSoon: false,
+  requiresAuth: false,
 };
 
 const imageCompressorToolConfig = {

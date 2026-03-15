@@ -18,6 +18,7 @@ function normalizeMetadata(toolConfig) {
     description: metadata.description,
     icon: metadata.icon,
     comingSoon: metadata.comingSoon,
+    requiresAuth: metadata.requiresAuth,
     version: metadata.version,
     keywords: metadata.keywords,
   };
