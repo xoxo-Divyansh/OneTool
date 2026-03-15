@@ -1,8 +1,8 @@
-"use client"
+"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, Menu, X } from "lucide-react";
 import ToolSearch from "@/components/common/ToolSearch";
 
@@ -11,6 +11,32 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        const target = e.target;
+        const isTyping =
+          target &&
+          (target.tagName === "INPUT" ||
+            target.tagName === "TEXTAREA" ||
+            target.isContentEditable);
+
+        if (isTyping) return;
+        setIsSearchOpen((prev) => {
+          const next = !prev;
+          if (next) {
+            setIsMobileMenuOpen(false);
+          }
+          return next;
+        });
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Don't show CTA if already on dashboard
   const showCTA = !pathname.startsWith("/dashboard");
@@ -33,7 +59,7 @@ export default function Navbar() {
                 <Search className="w-4 h-4 text-white/50 group-hover:text-white/70" />
                 <span className="text-white/50 group-hover:text-white/70">Search tools...</span>
                 <kbd className="ml-2 px-2 py-0.5 text-xs text-white/40 border border-white/10 rounded bg-white/5">
-                  ⌘K
+                  Cmd+K
                 </kbd>
               </button>
 

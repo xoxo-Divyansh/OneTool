@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { navItems } from "@/components/layout/navItems";
 import ToolSearch from "@/components/common/ToolSearch";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,6 +12,26 @@ export default function Sidebar({ isOpen, onClose }) {
   const pathname = usePathname() || "";
   const { user } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        const target = e.target;
+        const isTyping =
+          target &&
+          (target.tagName === "INPUT" ||
+            target.tagName === "TEXTAREA" ||
+            target.isContentEditable);
+
+        if (isTyping) return;
+        setIsSearchOpen((prev) => !prev);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const groupedItems = navItems.reduce((acc, item) => {
     const group = item.section || "Tools";

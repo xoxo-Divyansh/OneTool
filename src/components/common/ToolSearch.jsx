@@ -22,19 +22,12 @@ export default function ToolSearch({ isOpen, onClose }) {
     }
   }, [isOpen]);
 
-  // Handle keyboard shortcuts
+  // Handle keyboard shortcuts (close only)
   useEffect(() => {
-    function handleKeyDown(e) {
-      // Cmd+K or Ctrl+K to toggle
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        if (isOpen) {
-          onClose();
-        }
-      }
+    if (!isOpen) return undefined;
 
-      // Escape to close
-      if (e.key === "Escape" && isOpen) {
+    function handleKeyDown(e) {
+      if (e.key === "Escape") {
         onClose();
       }
     }
@@ -43,6 +36,8 @@ export default function ToolSearch({ isOpen, onClose }) {
       window.addEventListener("keydown", handleKeyDown);
       return () => window.removeEventListener("keydown", handleKeyDown);
     }
+
+    return undefined;
   }, [isOpen, onClose]);
 
   // Navigate to tool
