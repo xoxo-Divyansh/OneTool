@@ -173,7 +173,7 @@
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid var(--search-card-border);
-  background: var(--search-card);
+  background: var(--search-featured-card);
   text-decoration: none;
   color: inherit;
   transition: border-color 0.2s ease, transform 0.2s ease;
@@ -274,7 +274,7 @@
   background: var(--search-card);
   text-decoration: none;
   color: inherit;
-  box-shadow: var(--search-card-shadow);
+  box-shadow: var(--search-featured-shadow);
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
