@@ -17,7 +17,7 @@
   font-family: var(--font-heading), "Segoe UI", sans-serif;
   font-size: 1.2rem;
   font-weight: 700;
-  color: #f8fafc;
+  color: var(--text);
   text-decoration: none;
   letter-spacing: -0.01em;
 }
@@ -111,16 +111,20 @@
 }
 
 .searchIcon {
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--text-soft);
 }
 
 .searchInput {
   flex: 1;
   border: none;
   background: transparent;
-  color: #f8fafc;
+  color: var(--text);
   font-size: 1rem;
   outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--text-soft);
 }
 
 .searchKbd {
@@ -128,7 +132,7 @@
   padding: 4px 8px;
   border-radius: 8px;
   border: 1px solid rgba(148, 163, 184, 0.25);
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-soft);
   background: rgba(255, 255, 255, 0.04);
 }
 
@@ -207,6 +211,7 @@
   align-items: center;
   gap: 8px;
   font-weight: 600;
+  color: var(--text);
 }
 
 .searchTag {
@@ -221,7 +226,7 @@
 
 .searchResultArrow {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-soft);
 }
 
 .searchEmpty {
