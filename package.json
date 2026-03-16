@@ -21,6 +21,7 @@
     "monaco-editor": "^0.55.1",
     "mongoose": "^9.2.3",
     "next": "16.1.6",
+    "pdf-lib": "^1.17.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "zustand": "^5.0.11"

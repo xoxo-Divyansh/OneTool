@@ -1,7 +1,7 @@
 import apiTester from "@/tools/api-tester/tool.config";
 import imageCompressor from "@/tools/image-compressor/tool.config";
 import jsonFormatter from "@/tools/json-formatter/tool.config";
-import pdfGenerator from "@/tools/pdf-generator/tool.config";
+import pdfStudio from "@/tools/pdf-studio/tool.config";
 import studyTimer from "@/tools/study-timer/tool.config";
 
 /**
@@ -11,7 +11,7 @@ import studyTimer from "@/tools/study-timer/tool.config";
  * TODO(phase-2): Replace manual imports with registry-driven discovery.
  */
 export function loadToolConfigs() {
-  return [apiTester, imageCompressor, jsonFormatter, pdfGenerator, studyTimer];
+  return [apiTester, imageCompressor, jsonFormatter, pdfStudio, studyTimer];
 }
 
 /**
@@ -22,3 +22,4 @@ export function registerToolConfigs(registerTools) {
   const tools = loadToolConfigs();
   registerTools(tools);
 }
+
