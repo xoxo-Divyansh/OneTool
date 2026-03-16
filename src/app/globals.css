@@ -964,8 +964,8 @@ button {
   content: attr(data-tooltip);
   position: absolute;
   left: 50%;
-  bottom: calc(100% + 8px);
-  transform: translateX(-50%) translateY(4px);
+  top: calc(100% + 8px);
+  transform: translateX(-50%) translateY(-4px);
   background: rgba(8, 12, 18, 0.92);
   color: #e2e8f0;
   border: 1px solid rgba(148, 163, 184, 0.25);
@@ -987,11 +987,11 @@ button {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: calc(100% + 2px);
+  top: calc(100% + 2px);
   transform: translateX(-50%);
   border-width: 6px;
   border-style: solid;
-  border-color: rgba(8, 12, 18, 0.92) transparent transparent transparent;
+  border-color: transparent transparent rgba(8, 12, 18, 0.92) transparent;
   opacity: 0;
   transition: opacity 0.15s ease;
 }
@@ -2335,7 +2335,7 @@ button {
 }
 
 .theme-light .pdf-trust-badge::before {
-  border-color: #0f172a transparent transparent transparent;
+  border-color: transparent transparent #0f172a transparent;
 }
 
 .theme-light .pdf-inline-error {
