@@ -1,7 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Image as ImageIcon, Layers, Scissors } from "lucide-react";
+import {
+  HardDrive,
+  Image as ImageIcon,
+  Layers,
+  Scissors,
+  ShieldCheck,
+  Zap,
+} from "lucide-react";
 import { InlineSpinner } from "@/components/UI/LoadingSpinner";
 import DropzoneUploader from "@/components/upload/DropzoneUploader";
 import {
@@ -13,6 +20,27 @@ import {
   PDF_STUDIO_ACCEPT_CONFIG,
   PDF_STUDIO_LIMITS,
 } from "@/tools/pdf-studio/pdfStudio.constants";
+
+const TRUST_ITEMS = [
+  {
+    id: "fast",
+    label: "Fast Processing",
+    tooltip: "Files are processed on optimized servers for faster performance.",
+    icon: Zap,
+  },
+  {
+    id: "secure",
+    label: "Secure Handling",
+    tooltip: "Files are processed securely and automatically removed after processing.",
+    icon: ShieldCheck,
+  },
+  {
+    id: "large",
+    label: "Large Files Supported",
+    tooltip: "Server processing supports up to 20MB per file for this tool.",
+    icon: HardDrive,
+  },
+];
 
 function buildDownloadName(prefix) {
   const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
@@ -155,7 +183,17 @@ export default function PdfStudioUI({ defaults = pdfStudioDefaults }) {
           <h1>PDF Studio</h1>
           <p>Merge, split, and convert PDFs in one workspace.</p>
         </div>
-        <span className="tool-status">Server-side processing</span>
+        <div className="pdf-trustbar" aria-label="PDF Studio trust indicators">
+          {TRUST_ITEMS.map((item) => {
+            const Icon = item.icon;
+            return (
+              <span key={item.id} className="pdf-trust-badge" data-tooltip={item.tooltip}>
+                <Icon className="w-4 h-4" />
+                <span>{item.label}</span>
+              </span>
+            );
+          })}
+        </div>
       </header>
 
       <div className="pdf-tabs" role="tablist" aria-label="PDF Studio modules">
@@ -199,7 +237,8 @@ export default function PdfStudioUI({ defaults = pdfStudioDefaults }) {
                 resetStatus();
               }}
               allowReorder
-              hint="Drag to reorder using the arrows."        
+              hint="Drag to reorder using the arrows."
+              showTrust={false}
             />
 
             <div className="pdf-action-row">
@@ -231,6 +270,7 @@ export default function PdfStudioUI({ defaults = pdfStudioDefaults }) {
                 setSplitFile(next[0] || null);
                 resetStatus();
               }}
+              showTrust={false}
             />
 
             <div className="pdf-range">
@@ -273,6 +313,7 @@ export default function PdfStudioUI({ defaults = pdfStudioDefaults }) {
                 setImageFiles(next);
                 resetStatus();
               }}
+              showTrust={false}
             />
 
             <div className="pdf-action-row">
