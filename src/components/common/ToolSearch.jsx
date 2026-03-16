@@ -56,26 +56,22 @@ export default function ToolSearch({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center p-4 pt-[20vh]">
+    <div className="command-root fixed inset-0 z-[100] flex items-start justify-center p-4">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/90 backdrop-blur-sm"
-        onClick={onClose}
-        aria-label="Close search"
-      />
+      <div className="command-backdrop absolute inset-0" onClick={onClose} aria-label="Close search" />
 
       {/* Search Modal */}
-      <div className="relative w-full max-w-2xl bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+      <div className="command-modal relative w-full max-w-2xl overflow-hidden">
         {/* Search Input */}
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-white/10 bg-[#0f0f0f]">
-          <Search className="w-5 h-5 text-white/40 flex-shrink-0" />
+        <div className="command-input-row flex items-center gap-3 px-5 py-4">
+          <Search className="command-input-icon w-5 h-5 flex-shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search tools..."
-            className="flex-1 bg-transparent border-none outline-none text-white placeholder-white/40 text-base"
+            className="command-input-field flex-1 bg-transparent border-none outline-none text-base"
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
@@ -84,41 +80,41 @@ export default function ToolSearch({ isOpen, onClose }) {
           {query && (
             <button
               onClick={clearSearch}
-              className="text-white/40 hover:text-white/70 transition-colors"
+              className="command-clear-btn transition-colors"
               aria-label="Clear search"
             >
               <X className="w-4 h-4" />
             </button>
           )}
-          <kbd className="hidden sm:inline-flex items-center px-2 py-1 text-xs text-white/40 border border-white/10 rounded bg-white/5">
+          <kbd className="command-kbd hidden sm:inline-flex items-center px-2 py-1 text-xs rounded">
             ESC
           </kbd>
         </div>
 
         {/* Results */}
-        <div className="max-h-[60vh] overflow-y-auto bg-[#0a0a0a]">
+        <div className="command-results max-h-[60vh] overflow-y-auto">
           {!query.trim() && (
-            <div className="px-5 py-12 text-center">
-              <Search className="w-12 h-12 text-white/20 mx-auto mb-4" />
-              <p className="text-white/40 text-sm">Type to search tools...</p>
-              <p className="text-white/30 text-xs mt-2">Try searching for &ldquo;json&rdquo;, &ldquo;api&rdquo;, or &ldquo;image&rdquo;</p>
+            <div className="command-empty px-5 py-12 text-center">
+              <Search className="w-12 h-12 mx-auto mb-4 opacity-60" />
+              <p className="text-sm">Type to search tools...</p>
+              <p className="text-xs mt-2">Try searching for &ldquo;json&rdquo;, &ldquo;api&rdquo;, or &ldquo;image&rdquo;</p>
             </div>
           )}
 
           {query.trim() && isSearching && (
-            <div className="px-5 py-12 text-center">
+            <div className="command-empty px-5 py-12 text-center">
               <div className="inline-block w-8 h-8 border-2 border-white/20 border-t-emerald-400 rounded-full animate-spin mb-4" />
-              <p className="text-white/40 text-sm">Searching...</p>
+              <p className="text-sm">Searching...</p>
             </div>
           )}
 
           {query.trim() && !isSearching && !hasResults && (
-            <div className="px-5 py-12 text-center">
+            <div className="command-empty px-5 py-12 text-center">
               <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
-                <X className="w-6 h-6 text-white/40" />
+                <X className="w-6 h-6 opacity-60" />
               </div>
-              <p className="text-white/40 text-sm mb-2">No tools found for &ldquo;{query}&rdquo;</p>
-              <p className="text-white/30 text-xs">Try a different search term</p>
+              <p className="text-sm mb-2">No tools found for &ldquo;{query}&rdquo;</p>
+              <p className="text-xs">Try a different search term</p>
             </div>
           )}
 
@@ -128,31 +124,31 @@ export default function ToolSearch({ isOpen, onClose }) {
                 <button
                   key={tool.id}
                   onClick={() => handleToolClick(tool)}
-                  className="w-full flex items-center gap-4 px-5 py-3 hover:bg-white/5 transition-colors text-left group"
+                  className="command-result w-full flex items-center gap-4 px-5 py-3 text-left group"
                 >
                   {/* Tool Icon */}
-                  <div className="w-12 h-12 flex-shrink-0 rounded-xl border border-white/10 bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 flex items-center justify-center text-sm font-mono font-bold text-emerald-400 group-hover:border-emerald-400/50 group-hover:shadow-lg group-hover:shadow-emerald-500/20 transition-all">
+                  <div className="command-result-icon w-12 h-12 flex-shrink-0 rounded-xl flex items-center justify-center text-sm font-mono font-bold transition-all">
                     {tool.icon}
                   </div>
 
                   {/* Tool Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-white font-medium text-base truncate">
+                      <h3 className="command-result-title font-medium text-base truncate">
                         {tool.name}
                       </h3>
-                      <span className="text-xs text-white/40 px-2 py-0.5 rounded-md border border-white/10 bg-white/5 flex-shrink-0">
+                      <span className="command-result-tag text-xs px-2 py-0.5 rounded-md flex-shrink-0">
                         {getCategoryLabel(tool.category)}
                       </span>
                     </div>
-                    <p className="text-white/50 text-sm truncate">
+                    <p className="command-result-desc text-sm truncate">
                       {tool.description}
                     </p>
                   </div>
 
                   {/* Arrow */}
                   <svg
-                    className="w-5 h-5 text-white/20 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all flex-shrink-0"
+                    className="command-arrow w-5 h-5 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all flex-shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -171,20 +167,20 @@ export default function ToolSearch({ isOpen, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-white/10 bg-[#0f0f0f] flex items-center justify-between text-xs text-white/30">
+        <div className="command-footer px-5 py-3 flex items-center justify-between text-xs">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5">
-              <kbd className="px-1.5 py-0.5 border border-white/10 rounded bg-white/5">↑</kbd>
-              <kbd className="px-1.5 py-0.5 border border-white/10 rounded bg-white/5">↓</kbd>
+              <kbd className="command-kbd px-1.5 py-0.5 rounded">↑</kbd>
+              <kbd className="command-kbd px-1.5 py-0.5 rounded">↓</kbd>
               <span className="ml-1">Navigate</span>
             </span>
             <span className="flex items-center gap-1.5">
-              <kbd className="px-1.5 py-0.5 border border-white/10 rounded bg-white/5">↵</kbd>
+              <kbd className="command-kbd px-1.5 py-0.5 rounded">↵</kbd>
               <span className="ml-1">Select</span>
             </span>
           </div>
           <span className="flex items-center gap-1.5">
-            <kbd className="px-1.5 py-0.5 border border-white/10 rounded bg-white/5">ESC</kbd>
+            <kbd className="command-kbd px-1.5 py-0.5 rounded">ESC</kbd>
             <span className="ml-1">Close</span>
           </span>
         </div>
