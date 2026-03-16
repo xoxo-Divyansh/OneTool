@@ -921,8 +921,30 @@ button {
   font-size: 0.85rem;
 }
 
+.pdf-drop-hint {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  font-size: 0.75rem;
+}
+
 .pdf-file-input {
   display: none;
+}
+
+.pdf-uploader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pdf-dropzone.is-active {
+  border-color: rgba(34, 197, 94, 0.65);
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.pdf-dropzone.is-reject {
+  border-color: rgba(244, 63, 94, 0.55);
+  background: rgba(244, 63, 94, 0.12);
 }
 
 .pdf-file-list {
@@ -953,6 +975,9 @@ button {
 }
 
 .pdf-file-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.05);
   color: var(--text);
@@ -964,6 +989,45 @@ button {
 
 .pdf-file-remove:hover {
   border-color: rgba(34, 197, 94, 0.45);
+}
+
+.pdf-file-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pdf-move-btn {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.pdf-move-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pdf-inline-error {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #fecdd3;
+}
+
+.pdf-uploader-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pdf-privacy {
+  font-size: 0.75rem;
+  color: var(--text-soft);
 }
 
 .pdf-range {
@@ -2191,8 +2255,13 @@ button {
 .theme-light .pdf-file-item,
 .theme-light .pdf-limit,
 .theme-light .pdf-file-remove,
+.theme-light .pdf-move-btn,
 .theme-light .pdf-range-input {
   background: #ffffff;
+}
+
+.theme-light .pdf-inline-error {
+  color: #b91c1c;
 }
 
 .theme-light .pdf-status.success {
