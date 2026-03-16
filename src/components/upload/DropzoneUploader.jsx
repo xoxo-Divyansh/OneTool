@@ -2,7 +2,15 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { ArrowUp, ArrowDown, Trash2, UploadCloud } from "lucide-react";
+import {
+  ArrowUp,
+  ArrowDown,
+  HardDrive,
+  ShieldCheck,
+  Trash2,
+  UploadCloud,
+  Zap,
+} from "lucide-react";
 
 function formatBytes(bytes = 0) {
   if (bytes < 1024) return `${bytes} B`;
@@ -29,6 +37,27 @@ function getRejectionMessage(rejections, { maxFiles, maxSize } = {}) {
   }
 }
 
+const DEFAULT_TRUST_ITEMS = [
+  {
+    id: "fast",
+    label: "Fast Processing",
+    tooltip: "Files are processed on optimized servers for faster performance.",
+    icon: Zap,
+  },
+  {
+    id: "secure",
+    label: "Secure Handling",
+    tooltip: "Files are processed securely and automatically removed after processing.",
+    icon: ShieldCheck,
+  },
+  {
+    id: "large",
+    label: "Large Files Supported",
+    tooltip: "Server processing supports up to 20MB per file for this tool.",
+    icon: HardDrive,
+  },
+];
+
 export default function DropzoneUploader({
   title,
   subtitle,
@@ -42,6 +71,8 @@ export default function DropzoneUploader({
   allowReorder = false,
   hint,
   privacyNote = "Files are processed securely and not stored.",
+  showTrust = true,
+  trustItems = DEFAULT_TRUST_ITEMS,
 }) {
   const [localError, setLocalError] = useState("");
 
@@ -115,6 +146,24 @@ export default function DropzoneUploader({
       </div>
 
       {localError ? <p className="pdf-inline-error">{localError}</p> : null}
+
+      {showTrust && trustItems?.length ? (
+        <div className="pdf-trustbar" aria-label="PDF Studio trust indicators">
+          {trustItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <span
+                key={item.id}
+                className="pdf-trust-badge"
+                data-tooltip={item.tooltip}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{item.label}</span>
+              </span>
+            );
+          })}
+        </div>
+      ) : null}
 
       {showList && (
         <div className="pdf-file-list">
