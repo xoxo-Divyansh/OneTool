@@ -20,7 +20,7 @@ export const pdfStudioModules = [
   },
   {
     id: "image",
-    label: "Image ? PDF",
+    label: "Image -> PDF",
     description: "Convert a set of images into a multi-page PDF.",
     helper: "PNG and JPG images are supported in this release.",
   },
@@ -33,7 +33,7 @@ export function formatFileSize(bytes = 0) {
 }
 
 export function getLimitSummary() {
-  return `Max ${PDF_STUDIO_LIMITS.maxFiles} files • ${Math.round(
+  return `Max ${PDF_STUDIO_LIMITS.maxFiles} files | ${Math.round(
     PDF_STUDIO_LIMITS.maxFileSizeBytes / 1024 / 1024,
   )}MB per file`;
 }
