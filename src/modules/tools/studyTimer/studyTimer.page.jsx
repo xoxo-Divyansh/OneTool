@@ -1,9 +1,7 @@
-import dynamic from "next/dynamic";
-import { studyTimerDefaults } from "@/modules/tools/studyTimer/studyTimer.logic";
+"use client";
 
-const StudyTimerUI = dynamic(() => import("@/modules/tools/studyTimer/studyTimer.ui"), {
-  ssr: false,
-});
+import { studyTimerDefaults } from "@/modules/tools/studyTimer/studyTimer.logic";
+import StudyTimerUI from "@/modules/tools/studyTimer/studyTimer.ui";
 
 export default function StudyTimerPage() {
   return <StudyTimerUI defaults={studyTimerDefaults} />;
