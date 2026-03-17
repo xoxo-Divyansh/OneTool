@@ -187,7 +187,11 @@ export default function PdfStudioUI({ defaults = pdfStudioDefaults }) {
           {TRUST_ITEMS.map((item) => {
             const Icon = item.icon;
             return (
-              <span key={item.id} className="pdf-trust-badge" data-tooltip={item.tooltip}>
+              <span
+                key={item.id}
+                className={`pdf-trust-badge pdf-trust-${item.id}`}
+                data-tooltip={item.tooltip}
+              >
                 <Icon className="w-4 h-4" />
                 <span>{item.label}</span>
               </span>

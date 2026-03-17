@@ -24,7 +24,7 @@
   --panel: #020202;
   --panel-soft: #252a31;
   --border: #333944;
-  --text: #e6edf5;
+  --text: #313335;
   --text-soft: #98a2b3;
   --accent: #22c55e;
   --accent-hover: #aa586c;
@@ -952,12 +952,39 @@ button {
   border-radius: 999px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.04);
-  color: var(--text);
+  color: #e2e8f0;
   font-size: 0.75rem;
 }
 
 .pdf-trust-badge svg {
   color: var(--text-soft);
+}
+
+.pdf-trust-fast {
+  background: rgba(147, 197, 253, 0.18);
+  border-color: rgba(147, 197, 253, 0.45);
+}
+
+.pdf-trust-fast svg {
+  color: #93c5fd;
+}
+
+.pdf-trust-secure {
+  background: rgba(34, 197, 94, 0.16);
+  border-color: rgba(34, 197, 94, 0.45);
+}
+
+.pdf-trust-secure svg {
+  color: #86efac;
+}
+
+.pdf-trust-large {
+  background: rgba(253, 224, 71, 0.18);
+  border-color: rgba(250, 204, 21, 0.5);
+}
+
+.pdf-trust-large svg {
+  color: #fde68a;
 }
 
 .pdf-trust-badge::after {
@@ -1000,6 +1027,26 @@ button {
 .pdf-trust-badge:hover::before {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+.pdf-trust-badge:last-child::after {
+  left: auto;
+  right: 8px;
+  transform: translateY(-4px);
+}
+
+.pdf-trust-badge:last-child::before {
+  left: auto;
+  right: 18px;
+  transform: none;
+}
+
+.pdf-trust-badge:last-child:hover::after {
+  transform: translateY(0);
+}
+
+.pdf-trust-badge:last-child:hover::before {
+  transform: none;
 }
 
 .pdf-dropzone.is-active {
@@ -1156,6 +1203,195 @@ button {
   background: rgba(244, 63, 94, 0.12);
   color: #fecdd3;
   border-color: rgba(244, 63, 94, 0.4);
+}
+
+.study-timer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.study-chip {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.study-chip.focus {
+  border-color: rgba(59, 130, 246, 0.45);
+  color: #bfdbfe;
+}
+
+.study-chip.break {
+  border-color: rgba(34, 197, 94, 0.45);
+  color: #bbf7d0;
+}
+
+.study-timer-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 24px;
+}
+
+.study-timer-main {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.study-timer-display {
+  font-size: clamp(2.8rem, 6vw, 4rem);
+  font-family: var(--font-heading), "Segoe UI", sans-serif;
+  letter-spacing: 0.05em;
+  color: #e2e8f0;
+}
+
+.study-timer-display.focus {
+  color: #93c5fd;
+}
+
+.study-timer-display.break {
+  color: #4ade80;
+}
+
+.study-timer-progress {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.study-timer-progress span {
+  display: block;
+  height: 100%;
+  width: 0;
+  transition: width 0.25s ease;
+}
+
+.study-timer-progress.focus span {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.85), rgba(147, 197, 253, 0.9));
+}
+
+.study-timer-progress.break span {
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.8), rgba(74, 222, 128, 0.95));
+}
+
+.study-timer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.study-timer-primary {
+  min-width: 140px;
+  gap: 8px;
+}
+
+.study-timer-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font-heading), "Segoe UI", sans-serif;
+  font-weight: 500;
+}
+
+.study-timer-reset:hover {
+  border-color: rgba(148, 163, 184, 0.6);
+  color: #f8fafc;
+}
+
+.study-timer-message {
+  margin: 0;
+  color: var(--text-soft);
+}
+
+.study-timer-goal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 12px;
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.study-timer-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px;
+}
+
+.study-timer-settings h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.study-timer-settings p {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+.study-timer-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.study-timer-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.study-timer-input input {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 10px 12px;
+  color: var(--text);
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+}
+
+.study-timer-input input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.study-timer-hint {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-soft);
+}
+
+@media (max-width: 960px) {
+  .study-timer-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .study-timer-inputs {
+    grid-template-columns: 1fr;
+  }
 }
 
 .tool-grid {
@@ -2327,6 +2563,22 @@ button {
 
 .theme-light .pdf-trust-badge {
   background: #ffffff;
+  color: #0f172a;
+}
+
+.theme-light .pdf-trust-fast {
+  background: rgba(147, 197, 253, 0.18);
+  border-color: rgba(147, 197, 253, 0.45);
+}
+
+.theme-light .pdf-trust-secure {
+  background: rgba(34, 197, 94, 0.16);
+  border-color: rgba(34, 197, 94, 0.45);
+}
+
+.theme-light .pdf-trust-large {
+  background: rgba(253, 224, 71, 0.18);
+  border-color: rgba(250, 204, 21, 0.5);
 }
 
 .theme-light .pdf-trust-badge::after {
@@ -2346,6 +2598,55 @@ button {
   background: rgba(15, 118, 110, 0.12);
   border-color: rgba(15, 118, 110, 0.4);
   color: #0f3b2e;
+}
+
+.theme-light .study-chip {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.theme-light .study-chip.focus {
+  border-color: rgba(37, 99, 235, 0.35);
+  color: #1e40af;
+}
+
+.theme-light .study-chip.break {
+  border-color: rgba(21, 128, 61, 0.35);
+  color: #14532d;
+}
+
+.theme-light .study-timer-display {
+  color: #0f172a;
+}
+
+.theme-light .study-timer-display.focus {
+  color: #2563eb;
+}
+
+.theme-light .study-timer-display.break {
+  color: #15803d;
+}
+
+.theme-light .study-timer-progress {
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(148, 163, 184, 0.45);
+}
+
+.theme-light .study-timer-reset {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.theme-light .study-timer-goal {
+  background: #ffffff;
+  color: #475569;
+  border-color: rgba(148, 163, 184, 0.45);
+}
+
+.theme-light .study-timer-settings,
+.theme-light .study-timer-input input {
+  background: #ffffff;
+  color: #0f172a;
 }
 
 .theme-toggle {

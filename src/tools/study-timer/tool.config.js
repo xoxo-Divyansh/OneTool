@@ -4,10 +4,12 @@ export const metadata = {
   id: "study-timer",
   name: "Study Timer",
   category: "student",
-  description: "Track focus sessions with a clean study timer.",
+  description: "Stay focused with guided study sessions",
+  route: "/tools/study-timer",
   icon: "ST",
-  comingSoon: true,
+  comingSoon: false,
   requiresAuth: false,
+  keywords: ["study", "timer", "pomodoro", "focus", "break", "sessions"],
 };
 
 const studyTimerToolConfig = {
