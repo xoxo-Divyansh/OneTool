@@ -1234,6 +1234,35 @@ button {
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
   gap: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.study-timer-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.18), rgba(2, 6, 12, 0) 60%);
+  opacity: 0.85;
+  transform: scale(1);
+  animation: study-breathe 6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.study-timer-panel.focus::before {
+  background: radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.2), rgba(2, 6, 12, 0) 60%);
+  animation-duration: 6.2s;
+}
+
+.study-timer-panel.break::before {
+  background: radial-gradient(circle at 30% 20%, rgba(34, 197, 94, 0.22), rgba(2, 6, 12, 0) 60%);
+  animation-duration: 4.8s;
+}
+
+.study-timer-panel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .study-timer-main {
@@ -1269,15 +1298,17 @@ button {
   display: block;
   height: 100%;
   width: 0;
-  transition: width 0.25s ease;
+  transition: width 0.9s linear;
 }
 
 .study-timer-progress.focus span {
   background: linear-gradient(90deg, rgba(59, 130, 246, 0.85), rgba(147, 197, 253, 0.9));
+  box-shadow: 0 0 14px rgba(96, 165, 250, 0.45);
 }
 
 .study-timer-progress.break span {
   background: linear-gradient(90deg, rgba(34, 197, 94, 0.8), rgba(74, 222, 128, 0.95));
+  box-shadow: 0 0 14px rgba(34, 197, 94, 0.4);
 }
 
 .study-timer-controls {
@@ -1391,6 +1422,28 @@ button {
 @media (max-width: 720px) {
   .study-timer-inputs {
     grid-template-columns: 1fr;
+  }
+}
+
+@keyframes study-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.82;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .study-timer-panel::before {
+    animation: none;
+  }
+
+  .study-timer-progress span {
+    transition: none;
   }
 }
 
@@ -2625,6 +2678,16 @@ button {
 
 .theme-light .study-timer-display.break {
   color: #15803d;
+}
+
+.theme-light .study-timer-panel::before {
+  background: radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.18), rgba(255, 255, 255, 0) 60%);
+  opacity: 0.6;
+}
+
+.theme-light .study-timer-panel.break::before {
+  background: radial-gradient(circle at 30% 20%, rgba(34, 197, 94, 0.18), rgba(255, 255, 255, 0) 60%);
+  opacity: 0.6;
 }
 
 .theme-light .study-timer-progress {

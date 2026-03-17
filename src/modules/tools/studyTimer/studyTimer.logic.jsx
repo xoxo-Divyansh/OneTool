@@ -130,7 +130,7 @@ export function getInitialTimerSnapshot(defaults) {
         timeLeft: fallbackTime,
         endTime: null,
         sessionsCompleted,
-        message: "Ready to focus when you are.",
+        message: "Ready when you are. Start a focus session.",
       },
       persist,
     };
@@ -150,8 +150,8 @@ export function getInitialTimerSnapshot(defaults) {
           sessionsCompleted,
           message:
             mode === "focus"
-              ? "Stay focused. You are building momentum."
-              : "Break time. Recharge.",
+              ? "Stay with it — you're building momentum."
+              : "Take a short reset.",
         },
         persist,
       };
@@ -177,7 +177,7 @@ export function getInitialTimerSnapshot(defaults) {
           timeLeft: nextTime,
           endTime: null,
           sessionsCompleted,
-          message: "Focus complete! Time for a break.",
+          message: "Great focus. Take a breath.",
         },
         persist,
       };
@@ -204,7 +204,7 @@ export function getInitialTimerSnapshot(defaults) {
         timeLeft: nextTime,
         endTime: null,
         sessionsCompleted,
-        message: "Break complete! Ready to focus again.",
+        message: "Break complete. Ready to focus again.",
       },
       persist,
     };
@@ -221,7 +221,7 @@ export function getInitialTimerSnapshot(defaults) {
         timeLeft: Math.max(1, pausedLeft),
         endTime: null,
         sessionsCompleted,
-        message: "Timer paused. Resume when ready.",
+        message: "Paused — continue when ready.",
       },
       persist,
     };
@@ -236,7 +236,7 @@ export function getInitialTimerSnapshot(defaults) {
       timeLeft: Number(savedTimer.timeLeft ?? fallbackTime),
       endTime: null,
       sessionsCompleted,
-      message: "Ready to focus when you are.",
+      message: "Ready when you are. Start a focus session.",
     },
     persist,
   };

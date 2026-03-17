@@ -71,7 +71,7 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
   const renderTimeLeft = isMounted ? timeLeft : renderTotalSeconds;
   const renderProgress = isMounted ? progress : 0;
   const renderStatus = isMounted ? status : "idle";
-  const renderMessage = isMounted ? message : "Ready to focus when you are.";
+  const renderMessage = isMounted ? message : "Ready when you are. Start a focus session.";
   const renderSessions = isMounted ? sessionsCompleted : 0;
 
   const handleComplete = useCallback(() => {
@@ -85,7 +85,7 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
       const nextTime = breakMinutes * 60;
       setMode("break");
       setTimeLeft(nextTime);
-      setMessage("Focus complete! Time for a break.");
+    setMessage("Great focus. Take a breath.");
       saveTimerState({
         status: "idle",
         mode: "break",
@@ -104,7 +104,7 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
     const nextTime = focusMinutes * 60;
     setMode("focus");
     setTimeLeft(nextTime);
-    setMessage("Break complete! Ready to focus again.");
+    setMessage("Break complete. Ready to focus again.");
     saveTimerState({
       status: "idle",
       mode: "focus",
@@ -162,7 +162,7 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
     if (status === "running") {
       setStatus("paused");
       setEndTime(null);
-      setMessage("Timer paused. Resume when ready.");
+      setMessage("Paused — continue when ready.");
       saveTimerState({
         status: "paused",
         mode,
@@ -179,7 +179,7 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
     setEndTime(nextEndTime);
     setStatus("running");
     completionGuard.current = false;
-    setMessage(mode === "focus" ? "Stay focused. You are building momentum." : "Break time. Recharge.");
+    setMessage(mode === "focus" ? "Stay with it — you're building momentum." : "Take a short reset.");
     saveTimerState({
       status: "running",
       mode,
@@ -268,7 +268,7 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
         </div>
       </header>
 
-      <div className="dashboard-panel study-timer-panel">
+        <div className={`dashboard-panel study-timer-panel ${renderMode}`}>
         <div className="study-timer-main">
           <div className={`study-timer-display ${renderMode}`}>{formatTime(renderTimeLeft)}</div>
           <div className={`study-timer-progress ${renderMode}`} aria-hidden="true">
