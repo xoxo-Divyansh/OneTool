@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Pause, Play, RotateCcw, Sparkles } from "lucide-react";
 import {
   clampMinutes,
@@ -46,6 +46,11 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
   const [message, setMessage] = useState(initialState.message);
   const [endTime, setEndTime] = useState(initialState.endTime);
   const completionGuard = useRef(false);
+  const isMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   const totalSeconds = useMemo(() => {
     const minutes = mode === "focus" ? focusMinutes : breakMinutes;
@@ -57,6 +62,17 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
     const percent = ((totalSeconds - timeLeft) / totalSeconds) * 100;
     return Math.min(100, Math.max(0, percent));
   }, [totalSeconds, timeLeft]);
+
+  const renderMode = isMounted ? mode : "focus";
+  const renderFocusMinutes = isMounted ? focusMinutes : defaults.focusMinutes;
+  const renderBreakMinutes = isMounted ? breakMinutes : defaults.breakMinutes;
+  const renderTotalSeconds =
+    (renderMode === "focus" ? renderFocusMinutes : renderBreakMinutes) * 60;
+  const renderTimeLeft = isMounted ? timeLeft : renderTotalSeconds;
+  const renderProgress = isMounted ? progress : 0;
+  const renderStatus = isMounted ? status : "idle";
+  const renderMessage = isMounted ? message : "Ready to focus when you are.";
+  const renderSessions = isMounted ? sessionsCompleted : 0;
 
   const handleComplete = useCallback(() => {
     if (completionGuard.current) return;
@@ -234,7 +250,7 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
     }
   }
 
-  const modeLabel = mode === "focus" ? "Focus" : "Break";
+  const modeLabel = renderMode === "focus" ? "Focus" : "Break";
   const goalText = `Complete ${defaults.goalSessions} sessions today`;
   const isRunning = status === "running";
 
@@ -247,16 +263,16 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
           <p>Stay focused with guided study sessions.</p>
         </div>
         <div className="study-timer-meta">
-          <span className={`study-chip ${mode}`}>Mode: {modeLabel}</span>
-          <span className="study-chip">Sessions today: {sessionsCompleted}</span>
+          <span className={`study-chip ${renderMode}`}>Mode: {modeLabel}</span>
+          <span className="study-chip">Sessions today: {renderSessions}</span>
         </div>
       </header>
 
       <div className="dashboard-panel study-timer-panel">
         <div className="study-timer-main">
-          <div className={`study-timer-display ${mode}`}>{formatTime(timeLeft)}</div>
-          <div className={`study-timer-progress ${mode}`} aria-hidden="true">
-            <span style={{ width: `${progress}%` }} />
+          <div className={`study-timer-display ${renderMode}`}>{formatTime(renderTimeLeft)}</div>
+          <div className={`study-timer-progress ${renderMode}`} aria-hidden="true">
+            <span style={{ width: `${renderProgress}%` }} />
           </div>
           <div className="study-timer-controls">
             <button
@@ -276,7 +292,7 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
               Reset
             </button>
           </div>
-          <p className="study-timer-message" aria-live="polite">{message}</p>
+          <p className="study-timer-message" aria-live="polite">{renderMessage}</p>
           <div className="study-timer-goal">
             <Sparkles className="w-4 h-4" />
             <span>{goalText}</span>
@@ -293,7 +309,7 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
                 type="number"
                 min={5}
                 max={90}
-                value={focusMinutes}
+                value={renderFocusMinutes}
                 onChange={handleFocusChange}
                 disabled={isRunning}
               />
@@ -304,7 +320,7 @@ export default function StudyTimerUI({ defaults = studyTimerDefaults }) {
                 type="number"
                 min={3}
                 max={30}
-                value={breakMinutes}
+                value={renderBreakMinutes}
                 onChange={handleBreakChange}
                 disabled={isRunning}
               />
