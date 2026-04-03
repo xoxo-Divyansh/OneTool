@@ -1,5 +1,6 @@
 // SERVER
 import { DM_Sans, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import Providers from "./providers";
 
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
         className={`${bodyFont.variable} ${headingFont.variable} ${monoFont.variable}`}
       >
         <Providers>{children}</Providers>
+        <SpeedInsights />
       </body>
     </html>
   );
